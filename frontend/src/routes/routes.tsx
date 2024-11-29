@@ -4,7 +4,6 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import Root from "./root";
-import App from "@/App";
 import Login from "@/pages/login";
 import Register from "@/pages/register";
 import Dashboard from "@/pages/dashboard";
@@ -13,6 +12,7 @@ import Profile from "@/pages/profile";
 import DashboardPage from "@/pages/dashboard";
 import AuthRoute from "./auth-route";
 import ProtectedRoute from "./protected-route";
+import Landing from "@/pages/landing";
 
 function RoutesComponent() {
   const routes: RouteObject[] = [
@@ -21,7 +21,7 @@ function RoutesComponent() {
       children: [
         {
           path: "/",
-          element: <App />,
+          element: <Landing />,
         },
         {
           element: <AuthRoute />,
