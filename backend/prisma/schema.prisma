@@ -1,0 +1,132 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model artikel {
+  id_artikel Int       @id @default(autoincrement())
+  id_penulis Int?
+  judul      String?   @db.VarChar(200)
+  content    String?   @db.Text
+  created_at DateTime  @default(now()) @db.Timestamp(0)
+  updated_at DateTime  @default(now()) @db.Timestamp(0)
+  penulis    users?    @relation(fields: [id_penulis], references: [id_user], onUpdate: Restrict, map: "artikel_ibfk_1")
+  comment    comment[]
+
+  @@index([id_penulis], map: "id_penulis")
+}
+
+model booking {
+  id_booking       Int             @id @default(autoincrement())
+  id_user          Int?
+  id_hewan         Int?
+  id_layanan       Int?
+  id_dokter        Int?
+  appointment_date DateTime?       @db.DateTime()
+  total_price      Decimal?        @db.Decimal(10, 2)
+  notes            String?         @db.Text
+  created_at       DateTime        @default(now()) @db.Timestamp(0)
+  updated_at       DateTime        @default(now()) @db.Timestamp(0)
+  status           booking_status? @default(pending)
+  users            users?          @relation(fields: [id_user], references: [id_user], onDelete: Cascade, onUpdate: Restrict, map: "booking_ibfk_1")
+  hewan            hewan?          @relation(fields: [id_hewan], references: [id_hewan], onUpdate: Restrict, map: "booking_ibfk_2")
+  layanan          layanan?        @relation(fields: [id_layanan], references: [id_layanan], onUpdate: Restrict, map: "booking_ibfk_3")
+  dokter           dokter?         @relation(fields: [id_dokter], references: [id_dokter], onUpdate: Restrict, map: "booking_ibfk_4")
+
+  @@index([id_dokter], map: "id_dokter")
+  @@index([id_hewan], map: "id_hewan")
+  @@index([id_layanan], map: "id_layanan")
+  @@index([id_user], map: "id_user")
+}
+
+model comment {
+  id_comment Int      @id @default(autoincrement())
+  id_artikel Int?
+  id_user    Int?
+  content    String?  @db.Text
+  created_at DateTime @default(now()) @db.Timestamp(0)
+  artikel    artikel? @relation(fields: [id_artikel], references: [id_artikel], onDelete: Cascade, onUpdate: Restrict, map: "comment_ibfk_1")
+  users      users?   @relation(fields: [id_user], references: [id_user], onUpdate: Restrict, map: "comment_ibfk_2")
+
+  @@index([id_artikel], map: "id_artikel")
+  @@index([id_user], map: "id_user")
+}
+
+model dokter {
+  id_dokter        Int       @id @default(autoincrement())
+  id_user          Int?
+  spesialisasi     String?   @db.VarChar(50)
+  experience_years Int?
+  rating           Decimal?  @default(0.0) @db.Decimal(2, 1)
+  booking          booking[]
+  users            users?    @relation(fields: [id_user], references: [id_user], onDelete: Cascade, onUpdate: Restrict, map: "dokter_ibfk_1")
+
+  @@index([id_user], map: "id_user")
+}
+
+model hewan {
+  id_hewan   Int            @id @default(autoincrement())
+  id_user    Int?
+  nama_hewan String?        @db.VarChar(50)
+  species    hewan_species?
+  breed      String?        @db.VarChar(50)
+  age        Int?
+  weight     Decimal?       @db.Decimal(5, 2)
+  booking    booking[]
+  users      users?         @relation(fields: [id_user], references: [id_user], onDelete: Cascade, onUpdate: Restrict, map: "hewan_ibfk_1")
+
+  @@index([id_user], map: "id_user")
+}
+
+model layanan {
+  id_layanan   Int                   @id @default(autoincrement())
+  nama_layanan String?               @db.VarChar(50)
+  description  String?               @db.Text
+  harga        Decimal?              @db.Decimal(10, 2)
+  tipe_layanan layanan_tipe_layanan?
+  booking      booking[]
+}
+
+model users {
+  id_user      Int         @id @default(autoincrement())
+  username     String      @unique(map: "username") @db.VarChar(50)
+  password     String      @db.VarChar(100)
+  email        String      @unique(map: "email") @db.VarChar(100)
+  full_name    String?     @db.VarChar(100)
+  phone_number String?     @db.VarChar(15)
+  role         users_role? @default(user)
+  created_at   DateTime    @default(now()) @db.Timestamp(0)
+  artikel      artikel[]
+  booking      booking[]
+  comment      comment[]
+  dokter       dokter[]
+  hewan        hewan[]
+}
+
+enum hewan_species {
+  dog
+  cat
+  other
+}
+
+enum layanan_tipe_layanan {
+  grooming
+  konsultasi
+}
+
+enum users_role {
+  user
+  dokter
+  admin
+}
+
+enum booking_status {
+  pending
+  confirmed
+  completed
+  canceled
+}
