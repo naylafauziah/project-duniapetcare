@@ -13,10 +13,11 @@ import {
 } from "@/components/ui/sheet";
 
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
 import LogoImage from "@/assets/logopet.png";
+import { useNavigate } from "react-router-dom";
 
 interface RouteProps {
   href: string;
@@ -43,6 +44,7 @@ const routeList: RouteProps[] = [
 ];
 
 export const Navbar = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
     <header className="sticky top-0 z-40 w-full border-b-[1px] bg-white dark:border-b-slate-700 dark:bg-background">
@@ -124,15 +126,14 @@ export const Navbar = () => {
           </nav>
 
           <div className="hidden gap-2 md:flex">
-            <a
+            <Button
               rel="noreferrer noopener"
-              href="#"
-              target="_blank"
+              onClick={() => navigate("/login")}
               className={`border ${buttonVariants({ variant: "secondary" })}`}
             >
               {/* <GitHubLogoIcon className="mr-2 w-5 h-5" /> */}
               Login
-            </a>
+            </Button>
 
             <ModeToggle />
           </div>

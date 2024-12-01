@@ -9,9 +9,11 @@ import {
 import { loginUser } from "@/utils/authService";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
 
 function Login() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { refreshAuth } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,17 +22,25 @@ function Login() {
     e.preventDefault();
     try {
       const formData = { email, password };
-      const userData = await loginUser(formData); // Panggil fungsi login
+      const userData = await loginUser(formData);
+      toast({
+        title: "Login success",
+        variant: "default",
+      });
       console.log("User logged in:", userData);
     } catch (error) {
       console.log(error);
+      toast({
+        title: "Login failed",
+        variant: "destructive",
+      });
     } finally {
       await refreshAuth();
       navigate("/dashboard");
     }
   };
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex h-screen items-center justify-center bggree">
       <div className="flex h-[80vh] w-[80vw] shadow-2xl">
         <div className="flex h-full w-1/2 flex-col items-center justify-center gap-y-5">
           <p className="text-5xl font-bold">Sign in to petcare</p>

@@ -7,12 +7,12 @@ import {
   SiLinkedin,
 } from "@icons-pack/react-simple-icons";
 import { Input } from "@/components/ui/input";
-import api from "@/utils/axios";
-import { User } from "@/types/user";
 import { register, RegisterProps } from "@/utils/authService";
+import { useToast } from "@/hooks/use-toast";
 
 function Register() {
   const navigate = useNavigate();
+  const {toast} = useToast()
   const [userData, setUserData] = useState<RegisterProps>({
     full_name: "",
     phone_number: "",
@@ -34,9 +34,17 @@ function Register() {
     try {
       e.preventDefault();
       const response = await register(userData);
+      toast({
+        title: "Login success",
+        variant: "default",
+      });
       console.log(response);
     } catch (error) {
       console.log(error);
+      toast({
+        title: "Login failed",
+        variant: "destructive",
+      });
     } finally {
       navigate("/login");
     }

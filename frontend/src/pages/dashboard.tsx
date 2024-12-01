@@ -12,7 +12,7 @@ import {
   TabsTrigger
 } from '@/components/ui/tabs.js';
 
-export default function DashboardPage() {
+export default function Dashboard() {
   return (
     <>
       {/* <PageHead title="Dashboard | App" /> */}
