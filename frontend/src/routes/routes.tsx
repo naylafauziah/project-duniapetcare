@@ -14,6 +14,11 @@ import ProtectedRoute from "./protected-route";
 import Landing from "@/pages/landing";
 import Article from "@/pages/article";
 import Error from "@/pages/error";
+import App from "@/App";
+import Booking from "@/pages/booking";
+import AdminRoute from "./admin-route";
+import Services from "@/pages/services";
+import ListUser from "@/pages/list-user";
 
 function RoutesComponent() {
   const routes: RouteObject[] = [
@@ -24,6 +29,10 @@ function RoutesComponent() {
         {
           path: "/",
           element: <Landing />,
+        },
+        {
+          path: "/testing",
+          element: <App />,
         },
         {
           element: <AuthRoute />,
@@ -42,19 +51,36 @@ function RoutesComponent() {
           element: <ProtectedRoute />,
           children: [
             {
-              element: <Layout />,
+              path: "/booking",
+              element: <Booking />,
+            },
+            {
+              path: "/services",
+              element: <Services />,
+            },
+            {
+              element: <AdminRoute />,
               children: [
                 {
-                  path: "/profile",
-                  element: <Profile />,
-                },
-                {
-                  path: "/article",
-                  element: <Article />,
-                },
-                {
-                  path: "/dashboard",
-                  element: <Dashboard />,
+                  element: <Layout />,
+                  children: [
+                    {
+                      path: "/profile",
+                      element: <Profile />,
+                    },
+                    {
+                      path: "/article",
+                      element: <Article />,
+                    },
+                    {
+                      path: "/dashboard",
+                      element: <Dashboard />,
+                    },
+                    {
+                      path: "/list-user",
+                      element: <ListUser />,
+                    },
+                  ],
                 },
               ],
             },

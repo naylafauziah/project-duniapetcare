@@ -1,4 +1,4 @@
-import { CircleUser, Newspaper, LayoutDashboard } from "lucide-react";
+import { CircleUser, Newspaper, LayoutDashboard, Users } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -12,6 +12,7 @@ import { Button } from "../ui/button";
 import { logout } from "@/utils/authService";
 import { useAuth } from "@/hooks/use-auth";
 import { useNavigate } from "react-router-dom";
+import { title } from "process";
 
 const items = [
   {
@@ -23,6 +24,11 @@ const items = [
     title: "Artikel",
     route: "/article",
     icon: Newspaper,
+  },
+  {
+    title: "List User",
+    route:"/list-user",
+    icon: Users
   },
   {
     title: "Profile",

@@ -1,4 +1,4 @@
-import api from "./axios"; // Impor instance Axios
+import api from "./axios";
 import { AxiosResponse } from "axios";
 
 export type RegisterProps = {
@@ -18,7 +18,7 @@ export const loginUser = async (formData: {
   try {
     const response: AxiosResponse = await api.post("/auth/login", formData);
     const { token } = response.data;
-    localStorage.setItem("token", token); // Simpan token ke localStorage
+    localStorage.setItem("token", token);
     console.log("User logged in:", response.data);
     return response.data;
   } catch (error: any) {

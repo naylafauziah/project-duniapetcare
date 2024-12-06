@@ -1,16 +1,30 @@
-import { Input } from "./components/ui/input";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import axios from "axios";
+import { Button } from "./components/ui/button";
+import Example from "./example";
 
 function App() {
+  const queryClient = useQueryClient();
+
+  const user = useQuery({
+    queryKey: ["user"],
+    queryFn: async () => await axios.get("https://randomuser.me/api/"),
+  });
+
+  // console.log(user);
+
   return (
-    <div className="flex h-screen items-center justify-center">
-      <div className="flex h-[90vh] w-[90vw] shadow-xl ">
-        <div className="bg-primary h-full w-1/2"></div>
-        <div className="h-full w-auto">
-          <Input type="datetime-local"></Input>
-        </div>
+    <>
+      <Button onClick={()=>queryClient.refetchQueries({})}>refetch</Button>
+      <Example />
+      <div className="flex h-screen items-center justify-center">
+        <ReactQueryDevtools />
       </div>
-    </div>
+    </>
   );
 }
+
+
 
 export default App;
