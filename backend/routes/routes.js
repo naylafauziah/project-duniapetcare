@@ -1,5 +1,13 @@
 const express = require("express");
-const { login, register, me } = require("../controllers/user-controller");
+const {
+  login,
+  register,
+  me,
+  deleteUser,
+  getAllUser,
+  getuserById,
+  updateUser,
+} = require("../controllers/user-controller");
 const {
   getAllArtikel,
   getArtikelById,
@@ -44,16 +52,16 @@ const {
 const { verifyToken } = require("../middleware/auth-middleware");
 const router = express.Router();
 
-// debugging
-// router.post("/test", (req, res) => {
-//   console.log("Request Body:", req.body); // Debugging
-//   res.status(200).json({ message: "Success" });
-// });
-
 // auth route
 router.post("/auth/register", register);
 router.post("/auth/login", login);
 router.get("/auth/me", verifyToken, me);
+
+// user route
+router.get("/user", verifyToken, getAllUser);
+router.get("/user/:id", verifyToken, getuserById);
+router.patch("/user/:id", verifyToken, updateUser);
+router.delete("/user/:id", verifyToken, deleteUser);
 
 // artikel route
 router.get("/artikel", verifyToken, getAllArtikel);

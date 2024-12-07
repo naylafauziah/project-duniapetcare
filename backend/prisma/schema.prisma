@@ -26,7 +26,7 @@ model booking {
   id_hewan         Int?
   id_layanan       Int?
   id_dokter        Int?
-  appointment_date DateTime?       @db.DateTime()
+  appointment_date DateTime?       @db.DateTime(0)
   total_price      Decimal?        @db.Decimal(10, 2)
   notes            String?         @db.Text
   created_at       DateTime        @default(now()) @db.Timestamp(0)
@@ -87,6 +87,7 @@ model layanan {
   nama_layanan String?               @db.VarChar(50)
   description  String?               @db.Text
   harga        Decimal?              @db.Decimal(10, 2)
+  img_url      String?               @db.Text
   tipe_layanan layanan_tipe_layanan?
   booking      booking[]
 }

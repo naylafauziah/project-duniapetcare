@@ -103,4 +103,93 @@ const me = async (req, res) => {
   }
 };
 
-module.exports = { login, register, me };
+const getAllUser = async (req, res) => {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ error: "Access denied. Admins only." });
+  }
+
+  try {
+    const users = await prisma.users.findMany();
+    res.status(200).json(users);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+};
+
+const getuserById = async (req, res) => {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ error: "Access denied. Admins only." });
+  }
+
+  const { id } = req.params;
+
+  try {
+    const user = await prisma.users.findUnique({
+      where: { id_user: parseInt(id) },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+};
+
+const updateUser = async (req, res) => {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ error: "Access denied. Admins only." });
+  }
+
+  const { id } = req.params;
+  const { username, email, full_name, phone_number, role } = req.body;
+
+  try {
+    const user = await prisma.users.update({
+      where: { id_user: parseInt(id) },
+      data: { username, email, full_name, phone_number, role },
+    });
+
+    res.status(200).json({ message: "User updated successfully", user });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ error: "Access denied. Admins only." });
+  }
+
+  const { id } = req.params;
+
+  try {
+    await prisma.users.delete({
+      where: { id_user: parseInt(id) },
+    });
+
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+};
+
+module.exports = {
+  login,
+  register,
+  me,
+  getAllUser,
+  getuserById,
+  updateUser,
+  deleteUser,
+};
