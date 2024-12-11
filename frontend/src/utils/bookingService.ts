@@ -9,6 +9,11 @@ type PostBooking = {
   appointmentDate: Date;
 };
 
+type UpdateBookingStatus = {
+  id: number;
+  status: string;
+};
+
 export async function postBooking({
   appointmentDate,
   idHewan,
@@ -26,7 +31,36 @@ export async function postBooking({
       notes,
       appointment_date: appointmentDate,
     });
-    return response.data.booking
+    return response.data.booking;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+}
+
+export async function getAllBooking() {
+  try {
+    const response = await api.get("/booking");
+    return response.data.bookings;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+}
+
+export async function updateBookingStatus({ id, status }: UpdateBookingStatus) {
+  try {
+    const response = await api.post(`/booking/status/${id}`, {
+      status: status,
+    });
+    return response.data.booking;
+  } catch (error: any) {
+    throw error.response.data;
+  }
+}
+
+export async function deleteBooking(id: number) {
+  try {
+    const response = await api.delete(`/booking/${id}`);
+    return response.data;
   } catch (error: any) {
     throw error.response.data;
   }

@@ -17,7 +17,24 @@ const getAllBooking = async (req, res) => {
         },
         hewan: true,
         layanan: true,
-        dokter: true,
+        dokter: {
+          select: {
+            id_dokter: true,
+            id_user: true,
+            spesialisasi: true,
+            experience_years: true,
+            rating: true,
+            users: {
+              select: {
+                id_user: true,
+                username: true,
+                email: true,
+                full_name: true,
+                phone_number: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -54,7 +71,24 @@ const getBookingById = async (req, res) => {
         },
         hewan: true,
         layanan: true,
-        dokter: true,
+        dokter: {
+          select: {
+            id_dokter: true,
+            id_user: true,
+            spesialisasi: true,
+            experience_years: true,
+            rating: true,
+            users: {
+              select: {
+                id_user: true,
+                username: true,
+                email: true,
+                full_name: true,
+                phone_number: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -176,10 +210,42 @@ const deleteBooking = async (req, res) => {
   }
 };
 
+const updateStatusBooking = async (req, res) => {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ error: "Access denied. Admins only." });
+  }
+
+  const { id } = req.params;
+  const { status } = req.body;
+
+  const validStatuses = ["pending", "confirmed", "completed", "canceled"];
+  if (!validStatuses.includes(status)) {
+    return res.status(400).json({ error: "Invalid status" });
+  }
+
+  try {
+    const updatedBooking = await prisma.booking.update({
+      where: { id_booking: parseInt(id) },
+      data: { status },
+    });
+
+    res.status(200).json({
+      message: "Booking status updated successfully",
+      booking: updatedBooking,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: "Error updating booking status",
+      details: error.message,
+    });
+  }
+};
+
 module.exports = {
   getAllBooking,
   getBookingById,
   createBooking,
   updateBooking,
   deleteBooking,
+  updateStatusBooking,
 };

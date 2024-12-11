@@ -28,7 +28,7 @@ const getAllLayanan = async (req, res) => {
   
   // Create a new service
   const createLayanan = async (req, res) => {
-    const { nama_layanan, description, harga, tipe_layanan } = req.body;
+    const { nama_layanan, description, harga, tipe_layanan, img_url } = req.body;
   
     try {
       const newLayanan = await prisma.layanan.create({
@@ -37,6 +37,7 @@ const getAllLayanan = async (req, res) => {
           description,
           harga: parseFloat(harga),
           tipe_layanan,
+          img_url
         },
       });
       res.status(201).json({ message: "Service created successfully", layanan: newLayanan });
@@ -48,7 +49,7 @@ const getAllLayanan = async (req, res) => {
   // Update service
   const updateLayanan = async (req, res) => {
     const { id } = req.params;
-    const { nama_layanan, description, harga, tipe_layanan } = req.body;
+    const { nama_layanan, description, harga, tipe_layanan, img_url } = req.body;
   
     try {
       const updatedLayanan = await prisma.layanan.update({
@@ -58,6 +59,7 @@ const getAllLayanan = async (req, res) => {
           description,
           harga: harga ? parseFloat(harga) : undefined,
           tipe_layanan,
+          img_url
         },
       });
   

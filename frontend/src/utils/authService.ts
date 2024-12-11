@@ -58,7 +58,6 @@ export const logout = () => {
 export const checkIsAuthenticated = async () => {
   try {
     const response = await api.get("/auth/me");
-    console.log(response.data.user);
     return response.data.user;
   } catch (error: any) {
     throw error.response.data;

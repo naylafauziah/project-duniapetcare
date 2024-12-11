@@ -40,6 +40,7 @@ const {
   getAllBooking,
   getBookingById,
   updateBooking,
+  updateStatusBooking,
 } = require("../controllers/booking-controller");
 const {
   createLayanan,
@@ -48,6 +49,7 @@ const {
   getLayananById,
   updateLayanan,
 } = require("../controllers/layanan-controller");
+const { getPendapatan } = require("../controllers/pendapatan-controller");
 
 const { verifyToken } = require("../middleware/auth-middleware");
 const router = express.Router();
@@ -86,6 +88,7 @@ router.delete("/hewan/:id", verifyToken, deleteHewan);
 router.get("/booking", verifyToken, getAllBooking);
 router.get("/booking/:id", verifyToken, getBookingById);
 router.post("/booking", verifyToken, createBooking);
+router.post("/booking/status/:id", verifyToken, updateStatusBooking);
 router.patch("/booking/:id", verifyToken, updateBooking);
 router.delete("/booking/:id", verifyToken, deleteBooking);
 
@@ -96,13 +99,14 @@ router.post("/layanan", verifyToken, createLayanan);
 router.patch("/layanan/:id", verifyToken, updateLayanan);
 router.delete("/layanan/:id", verifyToken, deleteLayanan);
 
-// http://localhost:3000/api/dokter
-
 // dokter route
 router.get("/dokter", verifyToken, getAllDokter);
 router.get("/dokter/:id", verifyToken, getDokterById);
 router.post("/dokter", verifyToken, createDokter);
 router.patch("/dokter/:id", verifyToken, updateDokter);
 router.delete("/dokter/:id", verifyToken, deleteDokter);
+
+// revenue route
+router.get("/pendapatan", verifyToken, getPendapatan);
 
 module.exports = router;

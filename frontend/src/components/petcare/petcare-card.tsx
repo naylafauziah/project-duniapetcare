@@ -76,7 +76,7 @@ function PetcareCard({ layanan }: { layanan: PetcareCardProps }) {
           totalPrice: layanan.harga,
           appointmentDate: new Date(appointmentDate),
         });
-        window.location.reload()
+        window.location.reload();
       },
     });
   };
@@ -86,7 +86,7 @@ function PetcareCard({ layanan }: { layanan: PetcareCardProps }) {
       <img src={layanan.img_url} className="h-40 w-64 object-cover" />
       <div className="flex flex-col gap-4 p-3">
         <p className="font-bold">{layanan.nama_layanan}</p>
-        <p>{layanan.description}</p>
+        <p className="truncate ">{layanan.description}</p>
         <p>{layanan.harga}</p>
         <Dialog>
           <DialogTrigger className="w-full" asChild>

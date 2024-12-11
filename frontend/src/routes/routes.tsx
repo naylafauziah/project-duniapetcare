@@ -19,6 +19,7 @@ import Booking from "@/pages/booking";
 import AdminRoute from "./admin-route";
 import Services from "@/pages/services";
 import ListUser from "@/pages/list-user";
+import Layanan from "@/pages/layanan";
 
 function RoutesComponent() {
   const routes: RouteObject[] = [
@@ -51,10 +52,6 @@ function RoutesComponent() {
           element: <ProtectedRoute />,
           children: [
             {
-              path: "/booking",
-              element: <Booking />,
-            },
-            {
               path: "/services",
               element: <Services />,
             },
@@ -79,6 +76,14 @@ function RoutesComponent() {
                     {
                       path: "/list-user",
                       element: <ListUser />,
+                    },
+                    {
+                      path: "/layanan",
+                      element: <Layanan />,
+                    },
+                    {
+                      path: "/booking",
+                      element: <Booking />,
                     },
                   ],
                 },

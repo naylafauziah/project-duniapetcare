@@ -1,4 +1,11 @@
-import { CircleUser, Newspaper, LayoutDashboard, Users } from "lucide-react";
+import {
+  CircleUser,
+  Newspaper,
+  LayoutDashboard,
+  Users,
+  CalendarRange,
+  HandHeart,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -12,7 +19,6 @@ import { Button } from "../ui/button";
 import { logout } from "@/utils/authService";
 import { useAuth } from "@/hooks/use-auth";
 import { useNavigate } from "react-router-dom";
-import { title } from "process";
 
 const items = [
   {
@@ -21,14 +27,24 @@ const items = [
     icon: LayoutDashboard,
   },
   {
+    title: "Layanan",
+    route: "/layanan",
+    icon: HandHeart,
+  },
+  {
     title: "Artikel",
     route: "/article",
     icon: Newspaper,
   },
   {
+    title: "Booking",
+    route: "/booking",
+    icon: CalendarRange,
+  },
+  {
     title: "List User",
-    route:"/list-user",
-    icon: Users
+    route: "/list-user",
+    icon: Users,
   },
   {
     title: "Profile",

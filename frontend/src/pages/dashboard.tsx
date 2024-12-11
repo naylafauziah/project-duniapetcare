@@ -3,16 +3,46 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle
-} from '@/components/ui/card';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger
-} from '@/components/ui/tabs.js';
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent } from "@/components/ui/tabs.js";
+import { getAllBooking } from "@/utils/bookingService";
+import { getAllLayanan } from "@/utils/layananService";
+import { getRevenue } from "@/utils/revenueService";
+import { getAllUser } from "@/utils/usersService";
+import { useQuery } from "@tanstack/react-query";
+
+interface RevenueData {
+  total_revenue: number;
+}
 
 export default function Dashboard() {
+  const revenue = useQuery<RevenueData>({
+    queryKey: ["pendapatan"],
+    queryFn: getRevenue,
+  });
+  const users = useQuery({ queryKey: ["users"], queryFn: getAllUser });
+  const layanan = useQuery({ queryKey: ["layanan"], queryFn: getAllLayanan });
+  const booking = useQuery({ queryKey: ["booking"], queryFn: getAllBooking });
+  let totalPending = 0;
+
+  if (!booking.isLoading) {
+    booking.data.forEach((singleBooking: any) => {
+      if (singleBooking.status === "pending") {
+        totalPending++;
+      }
+    });
+  }
+
+  if (
+    revenue.isLoading ||
+    users.isLoading ||
+    layanan.isLoading ||
+    booking.isLoading
+  ) {
+    return <></>;
+  }
+
   return (
     <>
       {/* <PageHead title="Dashboard | App" /> */}
@@ -23,18 +53,12 @@ export default function Dashboard() {
           </h2>
         </div>
         <Tabs defaultValue="overview" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="analytics" disabled>
-              Analytics
-            </TabsTrigger>
-          </TabsList>
           <TabsContent value="overview" className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
-                    Total Revenue
+                    Total Pendapatan
                   </CardTitle>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -50,16 +74,16 @@ export default function Dashboard() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">$45,231.89</div>
+                  <div className="text-2xl font-bold">{`Rp. ${revenue.data?.total_revenue}`}</div>
                   <p className="text-xs text-muted-foreground">
-                    +20.1% from last month
+                    Total seluruh pendapatan
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
-                    Subscriptions
+                    List User
                   </CardTitle>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -77,15 +101,15 @@ export default function Dashboard() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">+2350</div>
+                  <div className="text-2xl font-bold">{users.data.length}</div>
                   <p className="text-xs text-muted-foreground">
-                    +180.1% from last month
+                    Jumlah user yang sudah register
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Sales</CardTitle>
+                  <CardTitle className="text-sm font-medium">Layanan</CardTitle>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -101,17 +125,17 @@ export default function Dashboard() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">+12,234</div>
+                  <div className="text-2xl font-bold">
+                    {layanan.data.length}
+                  </div>
                   <p className="text-xs text-muted-foreground">
-                    +19% from last month
+                    Jumlah layanan yang tersedia
                   </p>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    Active Now
-                  </CardTitle>
+                  <CardTitle className="text-sm font-medium">Status</CardTitle>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -126,9 +150,9 @@ export default function Dashboard() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">+573</div>
+                  <div className="text-2xl font-bold">{totalPending}</div>
                   <p className="text-xs text-muted-foreground">
-                    +201 since last hour
+                    Jumlah booking yang masih pending
                   </p>
                 </CardContent>
               </Card>
@@ -147,9 +171,7 @@ export default function Dashboard() {
                     You made 265 sales this month.
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
-                  {/* <RecentSales /> */}
-                </CardContent>
+                <CardContent>{/* <RecentSales /> */}</CardContent>
               </Card>
             </div>
           </TabsContent>
@@ -158,4 +180,3 @@ export default function Dashboard() {
     </>
   );
 }
- 
