@@ -134,7 +134,8 @@ function Layanan() {
 
   return (
     <div className="container flex h-full w-full flex-col items-center justify-center gap-y-3">
-      <div className="flex w-full justify-end">
+      <div className="my-2 flex w-full justify-between">
+        <p className="text-2xl font-bold">Layanan</p>
         <Dialog>
           <DialogTrigger asChild>
             <Button>

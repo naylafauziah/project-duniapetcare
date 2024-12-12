@@ -58,7 +58,9 @@ function PetcareSidebar() {
   const navigate = useNavigate();
   return (
     <Sidebar>
-      <SidebarHeader className="items-center">Petcare Nayla</SidebarHeader>
+      <SidebarHeader className="items-center hover:cursor-pointer" onClick={() => navigate("/")}>
+        Petcare Nayla
+      </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
           {items.map((item) => (

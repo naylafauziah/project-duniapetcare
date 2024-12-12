@@ -20,6 +20,8 @@ import AdminRoute from "./admin-route";
 import Services from "@/pages/services";
 import ListUser from "@/pages/list-user";
 import Layanan from "@/pages/layanan";
+import History from "@/pages/history";
+import Articles from "@/pages/articles";
 
 function RoutesComponent() {
   const routes: RouteObject[] = [
@@ -54,6 +56,14 @@ function RoutesComponent() {
             {
               path: "/services",
               element: <Services />,
+            },
+            {
+              path: "/history",
+              element: <History />,
+            },
+            {
+              path: "/articles",
+              element: <Articles />,
             },
             {
               element: <AdminRoute />,

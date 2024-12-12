@@ -36,7 +36,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getAllBooking, updateBookingStatus, deleteBooking } from "@/utils/bookingService";
+import {
+  getAllBooking,
+  updateBookingStatus,
+  deleteBooking,
+} from "@/utils/bookingService";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Trash2, Pencil } from "lucide-react";
 import { useState } from "react";
@@ -83,7 +87,10 @@ function Booking() {
   }
 
   return (
-    <div className="container flex h-full w-full items-center justify-center">
+    <div className="container flex h-full w-full items-center flex-col justify-center">
+      <div className="my-2 flex w-full justify-between">
+        <p className="text-2xl font-bold">Booking</p>
+      </div>
       <Table>
         <TableCaption>List Booking</TableCaption>
         <TableHeader>
@@ -108,14 +115,16 @@ function Booking() {
               <TableCell>{booking.dokter.users.full_name}</TableCell>
               <TableCell>{`Rp.${booking.total_price}`}</TableCell>
               <TableCell>{booking.notes}</TableCell>
-              <TableCell>{new Date(booking.appointment_date).toLocaleString("id-ID", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              })}</TableCell>
+              <TableCell>
+                {new Date(booking.appointment_date).toLocaleString("id-ID", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </TableCell>
               <TableCell>{booking.status}</TableCell>
               <TableCell className="flex w-full items-center justify-center gap-x-3">
                 <Dialog>
@@ -138,7 +147,9 @@ function Booking() {
                         <Button variant={"outline"}>{status}</Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
-                        <DropdownMenuLabel>Pilih status booking</DropdownMenuLabel>
+                        <DropdownMenuLabel>
+                          Pilih status booking
+                        </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuRadioGroup
                           value={status}
@@ -167,7 +178,10 @@ function Booking() {
                         <Button
                           variant={"default"}
                           onClick={() =>
-                            handleUpdateStatus(booking.id_booking, status ?? "pending")
+                            handleUpdateStatus(
+                              booking.id_booking,
+                              status ?? "pending",
+                            )
                           }
                         >
                           Confirm

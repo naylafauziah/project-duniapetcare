@@ -18,6 +18,9 @@ import { Menu } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
 import LogoImage from "@/assets/logopet.png";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/use-auth";
+import { logout } from "@/utils/authService";
+import { useToast } from "@/hooks/use-toast";
 
 interface RouteProps {
   href: string;
@@ -41,15 +44,32 @@ const routeList: RouteProps[] = [
     href: "/#faq",
     label: "FAQ",
   },
+  // {
+  //   href: "/articles",
+  //   label: "Articles",
+  // },
   {
     href: "/services",
-    label: "Services"
-  }
+    label: "Services",
+  },
+  {
+    href: "/history",
+    label: "History",
+  },
 ];
 
 export const Navbar = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const { user, isAuthenticated, refreshAuth } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const handleLogout = () => {
+    logout();
+    refreshAuth();
+    toast({ title: "Successfully logout", variant: "default" });
+  };
+
   return (
     <header className="sticky top-0 z-40 w-full border-b-[1px] bg-white dark:border-b-slate-700 dark:bg-background">
       <NavigationMenu className="mx-auto">
@@ -130,15 +150,29 @@ export const Navbar = () => {
           </nav>
 
           <div className="hidden gap-2 md:flex">
+            {isAuthenticated ? (
+              <Button
+                onClick={handleLogout}
+                variant={"secondary"}
+                className="border"
+              >
+                Logout
+              </Button>
+            ) : (
+              <Button
+                rel="noreferrer noopener"
+                onClick={() => navigate("/login")}
+                className={`border ${buttonVariants({ variant: "secondary" })}`}
+              >
+                Login
+              </Button>
+            )}
             <Button
-              rel="noreferrer noopener"
-              onClick={() => navigate("/login")}
-              className={`border ${buttonVariants({ variant: "secondary" })}`}
+              className={user?.role === "admin" ? "block" : "hidden"}
+              onClick={() => navigate("/dashboard")}
             >
-              {/* <GitHubLogoIcon className="mr-2 w-5 h-5" /> */}
-              Login
+              Dashboard
             </Button>
-
             <ModeToggle />
           </div>
         </NavigationMenuList>

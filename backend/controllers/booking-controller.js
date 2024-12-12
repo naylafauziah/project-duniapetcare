@@ -3,8 +3,12 @@ const prisma = new PrismaClient();
 
 // Get all bookings
 const getAllBooking = async (req, res) => {
+  const userId = req.user.id;
+  const role = req.user.role;
+
   try {
     const bookings = await prisma.booking.findMany({
+      where: role !== "admin" ? { id_user: userId } : {},
       include: {
         users: {
           select: {
@@ -55,6 +59,8 @@ const getAllBooking = async (req, res) => {
 // Get booking by ID
 const getBookingById = async (req, res) => {
   const { id } = req.params;
+  const userId = req.user.id;
+  const role = req.user.role;
 
   try {
     const booking = await prisma.booking.findUnique({
@@ -94,6 +100,10 @@ const getBookingById = async (req, res) => {
 
     if (!booking) {
       return res.status(404).json({ error: "Booking not found" });
+    }
+
+    if (role !== "admin" && booking.id_user !== userId) {
+      return res.status(403).json({ error: "Access denied" });
     }
 
     res.status(200).json({ booking });
