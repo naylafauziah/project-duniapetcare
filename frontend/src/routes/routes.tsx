@@ -22,6 +22,7 @@ import ListUser from "@/pages/list-user";
 import Layanan from "@/pages/layanan";
 import History from "@/pages/history";
 import Articles from "@/pages/articles";
+import Dokter from "@/pages/dokter";
 
 function RoutesComponent() {
   const routes: RouteObject[] = [
@@ -94,6 +95,10 @@ function RoutesComponent() {
                     {
                       path: "/booking",
                       element: <Booking />,
+                    },
+                    {
+                      path: "/dokter",
+                      element: <Dokter />,
                     },
                   ],
                 },

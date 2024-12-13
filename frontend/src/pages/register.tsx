@@ -101,7 +101,7 @@ function Register() {
             <Input
               type="text"
               placeholder="Username"
-              name="email"
+              name="username"
               onChange={handleChange}
             />
             <Input

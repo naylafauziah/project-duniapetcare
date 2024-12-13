@@ -5,6 +5,7 @@ import {
   Users,
   CalendarRange,
   HandHeart,
+  Stethoscope,
 } from "lucide-react";
 import {
   Sidebar,
@@ -19,6 +20,7 @@ import { Button } from "../ui/button";
 import { logout } from "@/utils/authService";
 import { useAuth } from "@/hooks/use-auth";
 import { useNavigate } from "react-router-dom";
+import { title } from "process";
 
 const items = [
   {
@@ -42,6 +44,11 @@ const items = [
     icon: CalendarRange,
   },
   {
+    title: "Dokter",
+    route: "/dokter",
+    icon: Stethoscope,
+  },
+  {
     title: "List User",
     route: "/list-user",
     icon: Users,
@@ -58,7 +65,10 @@ function PetcareSidebar() {
   const navigate = useNavigate();
   return (
     <Sidebar>
-      <SidebarHeader className="items-center hover:cursor-pointer" onClick={() => navigate("/")}>
+      <SidebarHeader
+        className="items-center hover:cursor-pointer"
+        onClick={() => navigate("/")}
+      >
         Petcare Nayla
       </SidebarHeader>
       <SidebarContent>
