@@ -193,7 +193,7 @@ function PetcareCard({ layanan }: { layanan: PetcareCardProps }) {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant={"outline"} className="w-full">
-                      Dokter
+                      {namaDokter}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-52">
