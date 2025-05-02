@@ -3,62 +3,43 @@ import { LogoIcon } from "./Icons";
 export const Footer = () => {
   return (
     <footer id="footer">
-      <hr className="w-11/12 mx-auto" />
+      <hr className="mx-auto w-11/12" />
 
-      <section className="container py-20 grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-x-12 gap-y-8">
+      <section className="container grid grid-cols-2 gap-x-12 gap-y-8 py-20 md:grid-cols-4 xl:grid-cols-6">
         <div className="col-span-full xl:col-span-2">
           <a
             rel="noreferrer noopener"
             href="/"
-            className="font-bold text-xl flex"
+            className="flex text-xl font-bold"
           >
-            <LogoIcon />
-            ShadcnUI/React
+            <img
+              src="/src/assets/logopet.png"
+              alt="Logo Dunia Petcare"
+              className="mr-2 h-10" // Anda bisa menyesuaikan ukuran gambar
+            />
+            Dunia Petcare
           </a>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <h3 className="font-bold text-lg">Follow US</h3>
-          <div>
-            <a
-              rel="noreferrer noopener"
-              href="#"
-              className="opacity-60 hover:opacity-100"
-            >
-              Github
-            </a>
-          </div>
-
-          <div>
-            <a
-              rel="noreferrer noopener"
-              href="#"
-              className="opacity-60 hover:opacity-100"
-            >
-              Twitter
-            </a>
-          </div>
-
-          <div>
-            <a
-              rel="noreferrer noopener"
-              href="#"
-              className="opacity-60 hover:opacity-100"
-            >
-              Dribbble
-            </a>
+          {/* Alamat Perusahaan */}
+          <div className="mt-4">
+            <p className="text-sm text-muted-foreground">
+              <span className="font-bold font-serif text-2xl">CV. Rajawali Feed Centre</span>{" "}
+              <br />
+              Jl. By Pass No.5, Tj. Saba Pitameh Nan XX, Kec. Lubuk Begalung, Kota Padang, Sumatera Barat 25221 <br/>
+              Pusat Kebutuhan Hewan Peliharaan Terlengkap, Terbesar, & <br />
+              Terpercaya di Padang
+            </p>
           </div>
         </div>
 
         <div className="flex flex-col gap-2">
-          <h3 className="font-bold text-lg">Platforms</h3>
+          <h3 className="text-lg font-bold">Toko Online</h3>
           <div>
             <a
               rel="noreferrer noopener"
               href="#"
               className="opacity-60 hover:opacity-100"
             >
-              Web
+              Tokopedia
             </a>
           </div>
 
@@ -68,7 +49,7 @@ export const Footer = () => {
               href="#"
               className="opacity-60 hover:opacity-100"
             >
-              Mobile
+              Shopee
             </a>
           </div>
 
@@ -78,20 +59,40 @@ export const Footer = () => {
               href="#"
               className="opacity-60 hover:opacity-100"
             >
-              Desktop
+              Bukalapak
+            </a>
+          </div>
+
+          <div>
+            <a
+              rel="noreferrer noopener"
+              href="#"
+              className="opacity-60 hover:opacity-100"
+            >
+              Lazada
+            </a>
+          </div>
+
+          <div>
+            <a
+              rel="noreferrer noopener"
+              href="#"
+              className="opacity-60 hover:opacity-100"
+            >
+              Blibli
             </a>
           </div>
         </div>
 
         <div className="flex flex-col gap-2">
-          <h3 className="font-bold text-lg">About</h3>
+          <h3 className="text-lg font-bold">Social</h3>
           <div>
             <a
               rel="noreferrer noopener"
               href="#"
               className="opacity-60 hover:opacity-100"
             >
-              Features
+              Instagram
             </a>
           </div>
 
@@ -101,7 +102,7 @@ export const Footer = () => {
               href="#"
               className="opacity-60 hover:opacity-100"
             >
-              Pricing
+              Facebook
             </a>
           </div>
 
@@ -109,6 +110,49 @@ export const Footer = () => {
             <a
               rel="noreferrer noopener"
               href="#"
+              className="opacity-60 hover:opacity-100"
+            >
+              Tiktok
+            </a>
+          </div>
+
+          <div>
+            <a
+              rel="noreferrer noopener"
+              href="#"
+              className="opacity-60 hover:opacity-100"
+            >
+              LinkedIn
+            </a>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <h3 className="text-lg font-bold">Tentang Kami</h3>
+          <div>
+            <a
+              rel="noreferrer noopener"
+              href="/services"
+              className="opacity-60 hover:opacity-100"
+            >
+              Layanan
+            </a>
+          </div>
+
+          <div>
+            <a
+              rel="noreferrer noopener"
+              href="/history"
+              className="opacity-60 hover:opacity-100"
+            >
+              My Order
+            </a>
+          </div>
+
+          <div>
+            <a
+              rel="noreferrer noopener"
+              href="#faq"
               className="opacity-60 hover:opacity-100"
             >
               FAQ
@@ -117,14 +161,14 @@ export const Footer = () => {
         </div>
 
         <div className="flex flex-col gap-2">
-          <h3 className="font-bold text-lg">Community</h3>
+          <h3 className="text-lg font-bold">Kami Melayani</h3>
           <div>
             <a
               rel="noreferrer noopener"
               href="#"
               className="opacity-60 hover:opacity-100"
             >
-              Youtube
+              Grooming
             </a>
           </div>
 
@@ -134,7 +178,7 @@ export const Footer = () => {
               href="#"
               className="opacity-60 hover:opacity-100"
             >
-              Discord
+              Konsul Kesehatan
             </a>
           </div>
 
@@ -144,9 +188,20 @@ export const Footer = () => {
               href="#"
               className="opacity-60 hover:opacity-100"
             >
-              Twitch
+              Penitipan Hewan
             </a>
           </div>
+
+          <div>
+            <a
+              rel="noreferrer noopener"
+              href="#"
+              className="opacity-60 hover:opacity-100"
+            >
+              Makanan & Aksesoris
+            </a>
+          </div>
+
         </div>
       </section>
 
@@ -156,10 +211,10 @@ export const Footer = () => {
           <a
             rel="noreferrer noopener"
             target="_blank"
-            href="https://www.linkedin.com/in/leopoldo-miranda/"
-            className="text-blue-400 transition-all border-blue-500 hover:border-b-2"
+            href="https://www.linkedin.com/in/nayla-fauziah-b65101264/"
+            className="border-blue-500 text-blue-400 transition-all hover:border-b-2"
           >
-            Leo Miranda
+            Nayla Fauziah
           </a>
         </h3>
       </section>

@@ -38,42 +38,51 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { deleteUser, getAllUser, updateRoleUser } from "@/utils/usersService";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { Trash2, Pencil } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 
 function ListUser() {
+  const [users, setUsers] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isError, setIsError] = useState<boolean>(false);
   const [role, setRole] = useState<string>();
 
-  const users = useQuery({
-    queryKey: ["users"],
-    queryFn: getAllUser,
-  });
+  const fetchUsers = async () => {
+    try {
+      const data = await getAllUser();
+      setUsers(data);
+      setIsError(false);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  const deleteUserMutation = useMutation({
-    mutationFn: (id: number) => deleteUser(id),
-    onSuccess: () => {
-      users.refetch();
-    },
-  });
-
-  const updateUserRoleMutation = useMutation({
-    mutationFn: ({ id, role }: { id: number; role: string }) =>
-      updateRoleUser({ id: id, role: role }),
-    onSuccess: () => {
-      users.refetch();
+  const handleEdit = async (id: number, role: string) => {
+    try {
+      await updateRoleUser({ id, role });
+      fetchUsers(); // Refresh the user list
       setRole(undefined);
-    },
-  });
-
-  const handleEdit = (id: number, role: string) => {
-    updateUserRoleMutation.mutate({ id, role });
+    } catch (error) {
+      console.error("Error updating user role:", error);
+    }
   };
 
-  const handleDelete = (id: number) => {
-    deleteUserMutation.mutate(id);
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteUser(id);
+      fetchUsers(); // Refresh the user list
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
   };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   return (
     <div className="container flex h-full w-full flex-col items-center justify-center">
@@ -84,6 +93,7 @@ function ListUser() {
         <TableCaption>List User</TableCaption>
         <TableHeader>
           <TableRow>
+            <TableHead>No</TableHead>
             <TableHead className="w-[100px]">ID</TableHead>
             <TableHead>Role</TableHead>
             <TableHead>Username</TableHead>
@@ -94,11 +104,22 @@ function ListUser() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {users.isLoading ? (
-            <></>
+          {isLoading ? (
+            <TableRow>
+              <TableCell colSpan={8} className="text-center">
+                Loading...
+              </TableCell>
+            </TableRow>
+          ) : isError ? (
+            <TableRow>
+              <TableCell colSpan={8} className="text-center">
+                Error loading data.
+              </TableCell>
+            </TableRow>
           ) : (
-            users.data.map((user: any, index: number) => (
+            users.map((user, index) => (
               <TableRow key={index}>
+                <TableCell>{index + 1}</TableCell>
                 <TableCell>{user.id_user}</TableCell>
                 <TableCell>{user.role}</TableCell>
                 <TableCell>{user.username}</TableCell>

@@ -23,6 +23,7 @@ import Layanan from "@/pages/layanan";
 import History from "@/pages/history";
 import Articles from "@/pages/articles";
 import Dokter from "@/pages/dokter";
+import ChatPage from "@/pages/ChatPage";
 
 function RoutesComponent() {
   const routes: RouteObject[] = [
@@ -65,6 +66,10 @@ function RoutesComponent() {
             {
               path: "/articles",
               element: <Articles />,
+            },
+            {
+              path: "/chat",
+              element: <ChatPage />,
             },
             {
               element: <AdminRoute />,

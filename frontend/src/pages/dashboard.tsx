@@ -6,46 +6,63 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent } from "@/components/ui/tabs.js";
+import petcare from "@/assets/petcare.jpg";
+import { useEffect, useState } from "react";
 import { getAllBooking } from "@/utils/bookingService";
 import { getAllLayanan } from "@/utils/layananService";
 import { getRevenue } from "@/utils/revenueService";
 import { getAllUser } from "@/utils/usersService";
-import { useQuery } from "@tanstack/react-query";
 
 interface RevenueData {
   total_revenue: number;
 }
 
 export default function Dashboard() {
-  const revenue = useQuery<RevenueData>({
-    queryKey: ["pendapatan"],
-    queryFn: getRevenue,
-  });
-  const users = useQuery({ queryKey: ["users"], queryFn: getAllUser });
-  const layanan = useQuery({ queryKey: ["layanan"], queryFn: getAllLayanan });
-  const booking = useQuery({ queryKey: ["booking"], queryFn: getAllBooking });
+  const [revenue, setRevenue] = useState<RevenueData | null>(null);
+  const [users, setUsers] = useState<any[]>([]);
+  const [layanan, setLayanan] = useState<any[]>([]);
+  const [booking, setBooking] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   let totalPending = 0;
 
-  if (!booking.isLoading) {
-    booking.data.forEach((singleBooking: any) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [revenueData, userData, layananData, bookingData] = await Promise.all([
+          getRevenue(),
+          getAllUser(),
+          getAllLayanan(),
+          getAllBooking(),
+        ]);
+
+        setRevenue(revenueData);
+        setUsers(userData);
+        setLayanan(layananData);
+        setBooking(bookingData);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (!isLoading) {
+    booking.forEach((singleBooking) => {
       if (singleBooking.status === "pending") {
         totalPending++;
       }
     });
   }
 
-  if (
-    revenue.isLoading ||
-    users.isLoading ||
-    layanan.isLoading ||
-    booking.isLoading
-  ) {
+  if (isLoading) {
     return <></>;
   }
 
   return (
     <>
-      {/* <PageHead title="Dashboard | App" /> */}
       <div className="max-h-screen flex-1 space-y-4 overflow-y-auto p-4 pt-6 md:p-8">
         <div className="flex items-center justify-between space-y-2">
           <h2 className="text-3xl font-bold tracking-tight">
@@ -74,7 +91,9 @@ export default function Dashboard() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{`Rp. ${revenue.data?.total_revenue}`}</div>
+                  <div className="text-2xl font-bold">
+                    {`Rp. ${revenue?.total_revenue}`}
+                  </div>
                   <p className="text-xs text-muted-foreground">
                     Total seluruh pendapatan
                   </p>
@@ -101,7 +120,7 @@ export default function Dashboard() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{users.data.length}</div>
+                  <div className="text-2xl font-bold">{users.length}</div>
                   <p className="text-xs text-muted-foreground">
                     Jumlah user yang sudah register
                   </p>
@@ -125,9 +144,7 @@ export default function Dashboard() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">
-                    {layanan.data.length}
-                  </div>
+                  <div className="text-2xl font-bold">{layanan.length}</div>
                   <p className="text-xs text-muted-foreground">
                     Jumlah layanan yang tersedia
                   </p>
@@ -158,20 +175,13 @@ export default function Dashboard() {
               </Card>
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-7">
-              <Card className="col-span-4">
+              <Card className="col-span-8">
                 <CardHeader>
-                  <CardTitle>Overview</CardTitle>
+                  <CardTitle></CardTitle>
                 </CardHeader>
-                <CardContent className="pl-2">{/* <Overview /> */}</CardContent>
-              </Card>
-              <Card className="col-span-4 md:col-span-3">
-                <CardHeader>
-                  <CardTitle>Recent Sales</CardTitle>
-                  <CardDescription>
-                    You made 265 sales this month.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>{/* <RecentSales /> */}</CardContent>
+                <CardContent className="pl-2">
+                  <img src={petcare} alt="" className="mx-2 w-auto rounded-lg" />
+                </CardContent>
               </Card>
             </div>
           </TabsContent>

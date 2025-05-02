@@ -15,19 +15,33 @@ function Profile() {
       <div className="container flex h-full w-full items-center justify-center">
         <Card className="h-fit w-fit">
           <CardHeader className="flex items-center justify-center">
-            <Avatar className="size-48">
+            <Avatar className="size-40">
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>Loading...</AvatarFallback>
             </Avatar>
           </CardHeader>
           <Separator />
-          <CardContent>
+          <CardContent className="w-80">
             <div>
-              <p>{`Full Name: ${user?.full_name}`}</p>
-              <p>{`Username: ${user?.username}`}</p>
-              <p>{`Email: ${user?.email}`}</p>
-              <p>{`Phone Number: ${user?.phone_number}`}</p>
-              <p>{`Role: ${user?.role}`}</p>
+              <p className="flex justify-center text-lg font-bold py-2">
+                {user?.full_name}
+              </p>
+              <p>Username</p>
+              <p className="rounded-md border border-blue-400 px-2 py-1 text-gray-500">
+                {user?.username}
+              </p>
+              <p>Email</p>
+              <p className="rounded-md border border-blue-400 px-2 py-1 text-gray-500">
+                {user?.email}
+              </p>
+              <p>Phone Number</p>
+              <p className="rounded-md border border-blue-400 px-2 py-1 text-gray-500">
+                {user?.phone_number}
+              </p>
+              <p>Role</p>
+              <p className="rounded-md border border-blue-400 px-2 py-1 text-gray-500">
+                {user?.role}
+              </p>
             </div>
           </CardContent>
         </Card>

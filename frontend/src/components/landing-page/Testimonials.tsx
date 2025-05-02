@@ -19,46 +19,46 @@ interface TestimonialProps {
 
 const testimonials: TestimonialProps[] = [
   {
-    image: "https://github.com/shadcn.png",
-    name: "John Doe React",
-    userName: "@john_Doe",
-    comment: "This landing page is awesome!",
+    image: "https://i.pravatar.cc/150?img=40",
+    name: "Sarah Williams",
+    userName: "Pemilik Kucing",
+    comment:
+      "DuniaPetcare benar-benar membantu saya menjaga kebersihan dan kesehatan kucing saya, Luna. Pelayanannya cepat dan sangat profesional!",
   },
   {
-    image: "https://github.com/shadcn.png",
-    name: "John Doe React",
-    userName: "@john_Doe1",
+    image: "https://i.pravatar.cc/150?img=70",
+    name: "Michael Brown",
+    userName: "Pemilik Anjing",
     comment:
-      "Lorem ipsum dolor sit amet,empor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.",
-  },
-
-  {
-    image: "https://github.com/shadcn.png",
-    name: "John Doe React",
-    userName: "@john_Doe2",
-    comment:
-      "Lorem ipsum dolor sit amet,exercitation. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
+      "Sangat puas dengan layanan grooming untuk anjing saya, Max. Dia selalu terlihat segar dan bahagia setelah perawatan di DuniaPetcare.",
   },
   {
-    image: "https://github.com/shadcn.png",
-    name: "John Doe React",
-    userName: "@john_Doe3",
+    image: "https://i.pravatar.cc/150?img=35",
+    name: "Emily Davis",
+    userName: "Pemilik Kucing",
     comment:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
+      "Dokter hewan di DuniaPetcare sangat ramah dan informatif. Mereka memberikan solusi terbaik untuk kesehatan kucing saya, Simba.",
   },
   {
-    image: "https://github.com/shadcn.png",
-    name: "John Doe React",
-    userName: "@john_Doe4",
+    image: "https://i.pravatar.cc/150?img=60",
+    name: "James Wilson",
+    userName: "Pemilik Anjing",
     comment:
-      "Lorem ipsum dolor sit amet, tempor incididunt  aliqua. Ut enim ad minim veniam, quis nostrud.",
+      "Saya sangat merekomendasikan DuniaPetcare untuk layanan daycare. Anjing saya, Spot, selalu tampak senang dan aktif setelah berada di sana.",
   },
   {
-    image: "https://github.com/shadcn.png",
-    name: "John Doe React",
-    userName: "@john_Doe5",
+    image: "https://i.pravatar.cc/150?img=36",
+    name: "Olivia Johnson",
+    userName: "Pemilik Kucing",
     comment:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "Layanan konsultasi dokter di DuniaPetcare sangat membantu. Kucing saya, Bella, mendapatkan perawatan terbaik untuk kesehatannya.",
+  },
+  {
+    image: "https://i.pravatar.cc/150?img=17",
+    name: "Daniel Roberts",
+    userName: "Pemilik Anjing",
+    comment:
+      "DuniaPetcare memberikan pengalaman yang luar biasa untuk anjing saya, Bruno. Grooming dan daycare-nya sangat profesional!",
   },
 ];
 
@@ -69,17 +69,18 @@ export const Testimonials = () => {
       className="container py-24 sm:py-32"
     >
       <h2 className="text-3xl md:text-4xl font-bold">
-        Discover Why
+      Temukan Alasan
         <span className="bg-gradient-to-b from-blue-400 to-blue-600 text-transparent bg-clip-text">
           {" "}
-          People Love{" "}
+          Mengapa Mereka Memilih{" "}
         </span>
-        This Landing Page
+        DuniaPetcare
       </h2>
 
       <p className="text-xl text-muted-foreground pt-4 pb-8">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non unde error
-        facere hic reiciendis illo
+      Kami berdedikasi untuk memberikan layanan terbaik bagi hewan kesayangan Anda. 
+        Berikut pengalaman dari para pemilik kucing dan anjing yang mempercayakan 
+        perawatan hewan mereka kepada kami.
       </p>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 sm:block columns-2  lg:columns-3 lg:gap-6 mx-auto space-y-4 lg:space-y-6">

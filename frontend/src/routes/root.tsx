@@ -14,7 +14,7 @@ function Root({ className }: { className?: string }) {
         <AuthProvider>
           <QueryClientProvider client={queryClient}>
             <Outlet />
-            <ReactQueryDevtools />
+            
             <Toaster />
           </QueryClientProvider>
         </AuthProvider>

@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
@@ -6,7 +8,6 @@ import {
   DialogTitle,
   DialogClose,
 } from "@/components/ui/dialog";
-import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,14 +17,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
-import { getAllDokter } from "@/utils/dokterService";
 import { postHewan } from "@/utils/hewanServices";
 import { postBooking } from "@/utils/bookingService";
+import { getAllDokter } from "@/utils/dokterService";
 
 type PetcareCardProps = {
   id_layanan: number;
@@ -56,28 +55,30 @@ function PetcareCard({ layanan }: { layanan: PetcareCardProps }) {
     weight: 0,
   });
 
-  const queryDokter = useQuery({
-    queryKey: ["dokter"],
-    queryFn: getAllDokter,
-  });
+  const [dokterData, setDokterData] = useState<any[]>([]);
 
-  const mutationHewan = useMutation({ mutationFn: postHewan });
-  const mutationBooking = useMutation({ mutationFn: postBooking });
+  useEffect(() => {
+    // Fetch the dokter list when the component mounts
+    const fetchDokters = async () => {
+      const data = await getAllDokter();
+      setDokterData(data);
+    };
+
+    fetchDokters();
+  }, []);
 
   const handleSubmit = () => {
-    // e.preventDefault();
-    mutationHewan.mutate(formHewanData, {
-      onSuccess: (data) => {
-        mutationBooking.mutate({
-          idDokter: parseInt(idDokter!),
-          idHewan: data.id_hewan,
-          idLayanan: layanan.id_layanan,
-          notes: notes,
-          totalPrice: layanan.harga,
-          appointmentDate: new Date(appointmentDate),
-        });
+    postHewan(formHewanData).then((data) => {
+      postBooking({
+        idDokter: parseInt(idDokter!),
+        idHewan: data.id_hewan,
+        idLayanan: layanan.id_layanan,
+        notes: notes,
+        totalPrice: layanan.harga,
+        appointmentDate: new Date(appointmentDate),
+      }).then(() => {
         window.location.reload();
-      },
+      });
     });
   };
 
@@ -86,15 +87,28 @@ function PetcareCard({ layanan }: { layanan: PetcareCardProps }) {
       <img src={layanan.img_url} className="h-40 w-64 object-cover" />
       <div className="flex flex-col gap-4 p-3">
         <p className="font-bold">{layanan.nama_layanan}</p>
-        <p className="truncate ">{layanan.description}</p>
+        <p className="truncate">{layanan.description}</p>
         <p>{layanan.harga}</p>
+        <Dialog>
+          <DialogTrigger><Button className="w-full" variant={"outline"}>Detail</Button></DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+            <img src={layanan.img_url} className="h-50 w-full object-cover py-2" />
+              <DialogTitle>
+                <p className="text-2xl text-center">{layanan.nama_layanan}</p>
+              </DialogTitle>
+            </DialogHeader>
+            <p className="text-justify">{layanan.description}</p>
+            <p className="text-lg text-sky-600">{`Harga: ${layanan.harga}`}</p>
+          </DialogContent>
+        </Dialog>
         <Dialog>
           <DialogTrigger className="w-full" asChild>
             <Button className="w-full">Book</Button>
           </DialogTrigger>
           <DialogContent aria-describedby={undefined}>
             <DialogHeader>
-              <DialogTitle>{`book ${layanan.nama_layanan}`}</DialogTitle>
+              <DialogTitle>{`Book ${layanan.nama_layanan}`}</DialogTitle>
             </DialogHeader>
 
             <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
@@ -160,33 +174,35 @@ function PetcareCard({ layanan }: { layanan: PetcareCardProps }) {
                   }
                 />
               </div>
-              <div>
-                <Label>Age</Label>
-                <Input
-                  type="number"
-                  required
-                  value={formHewanData.age}
-                  onChange={(e) =>
-                    setFormHewanData({
-                      ...formHewanData,
-                      age: parseInt(e.target.value),
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <Label>Weight</Label>
-                <Input
-                  type="number"
-                  required
-                  value={formHewanData.weight}
-                  onChange={(e) =>
-                    setFormHewanData({
-                      ...formHewanData,
-                      weight: parseInt(e.target.value),
-                    })
-                  }
-                />
+              <div className="flex w-full justify-between">
+                <div className="mr-2 w-1/2">
+                  <Label>Age</Label>
+                  <Input
+                    type="number"
+                    required
+                    value={formHewanData.age}
+                    onChange={(e) =>
+                      setFormHewanData({
+                        ...formHewanData,
+                        age: parseInt(e.target.value),
+                      })
+                    }
+                  />
+                </div>
+                <div className="mr-2 w-1/2">
+                  <Label>Weight</Label>
+                  <Input
+                    type="number"
+                    required
+                    value={formHewanData.weight}
+                    onChange={(e) =>
+                      setFormHewanData({
+                        ...formHewanData,
+                        weight: parseInt(e.target.value),
+                      })
+                    }
+                  />
+                </div>
               </div>
               <div>
                 <Label>Dokter</Label>
@@ -208,15 +224,15 @@ function PetcareCard({ layanan }: { layanan: PetcareCardProps }) {
                         setNamaDokter(value.users.full_name);
                       }}
                     >
-                      {queryDokter.isLoading ? (
-                        <></>
-                      ) : (
-                        queryDokter.data.map((dokter: any, index: number) => (
+                      {dokterData.length > 0 ? (
+                        dokterData.map((dokter: any, index: number) => (
                           <DropdownMenuRadioItem
                             key={index}
                             value={dokter}
                           >{`Dokter ${dokter.users.full_name}, spesialis ${dokter.spesialisasi}`}</DropdownMenuRadioItem>
                         ))
+                      ) : (
+                        <p>Loading doctors...</p>
                       )}
                     </DropdownMenuRadioGroup>
                   </DropdownMenuContent>
@@ -273,7 +289,6 @@ function PetcareCard({ layanan }: { layanan: PetcareCardProps }) {
                       <Button
                         type="submit"
                         onClick={handleSubmit}
-                        disabled={mutationHewan.isPending}
                       >
                         Confirm
                       </Button>

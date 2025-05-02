@@ -1,18 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  SiFacebook,
-  SiGoogle,
-  SiLinkedin,
-} from "@icons-pack/react-simple-icons";
 import { Input } from "@/components/ui/input";
 import { register, RegisterProps } from "@/utils/authService";
 import { useToast } from "@/hooks/use-toast";
+import illustration from "@/assets/illustration.svg";
 
 function Register() {
   const navigate = useNavigate();
-  const {toast} = useToast()
+  const { toast } = useToast();
   const [userData, setUserData] = useState<RegisterProps>({
     full_name: "",
     phone_number: "",
@@ -35,7 +31,7 @@ function Register() {
       e.preventDefault();
       const response = await register(userData);
       toast({
-        title: "Login success",
+        title: "Your account registered",
         variant: "default",
       });
       console.log(response);
@@ -51,50 +47,33 @@ function Register() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center">
-      <div className="flex h-[80vh] w-[80vw] shadow-2xl">
-        <div className="flex h-full w-1/2 flex-col items-center justify-center gap-y-8 bg-primary">
-          <p className="text-5xl font-bold text-secondary">Welcome Back!</p>
-          <p className="text-center text-lg text-secondary">
-            <span>To keep connected with us please login</span>
-            <br />
-            <span>with personal info</span>
-          </p>
-          <Button
-            onClick={() => navigate("/login")}
-            variant={"outline"}
-            className="w-40 rounded-full bg-primary font-bold text-secondary"
-          >
-            SIGN IN
-          </Button>
-        </div>
-        <div className="flex h-full w-1/2 flex-col items-center justify-center gap-y-5">
-          <p className="text-5xl font-bold">Create Account</p>
-          <div className="flex gap-x-5">
-            <Button variant={"outline"} className="size-11 rounded-full">
-              <SiFacebook />
-            </Button>
-            <Button variant={"outline"} className="size-11 rounded-full">
-              <SiGoogle />
-            </Button>
-            <Button variant={"outline"} className="size-11 rounded-full">
-              <SiLinkedin />
-            </Button>
+    <div className="flex h-screen w-screen items-center justify-center bg-primary-foreground">
+      <div className="flex h-full w-full">
+        {/* Left Section */}
+          <div className="lg:flex w-1/2 bg-white items-center justify-center rounded-3xl shadow-2xl hidden">
+            <img
+              src={illustration}
+            alt="Illustration"
+              className="max-w-full h-auto"
+            />
           </div>
+        {/* Right Section */}
+        <div className="flex h-full lg:w-1/2 w-screen flex-col items-center justify-center gap-y-5 p-10">
+        <h1 className="text-4xl font-bold">Get Started Now</h1>
+        <p className="text-gray-500 mb-4">Create account to make an appointment</p>
           <form
             onSubmit={handleSubmit}
-            className="flex w-80 flex-col items-center justify-center gap-y-3"
+            className="flex w-80 flex-col items-center gap-y-4"
           >
-            <p className="text-gray-400">or use your email for registration</p>
             <Input
               type="number"
-              placeholder="Phone number"
+              placeholder="Phone Number"
               name="phone_number"
               onChange={handleChange}
             />
             <Input
               type="text"
-              placeholder="Full name"
+              placeholder="Fullname"
               name="full_name"
               onChange={handleChange}
             />
@@ -118,11 +97,14 @@ function Register() {
             />
             <Button
               type="submit"
-              className="w-40 rounded-full bg-primary font-bold text-secondary"
+              className="w-full bg-blue-500 text-white py-2 rounded-lg font-bold hover:bg-blue-600"
             >
-              SIGN UP
+              Sign up
             </Button>
           </form>
+          <p className="text-sm text-gray-500">
+            Already have an account? <span className="text-blue-500 cursor-pointer" onClick={() => navigate("/login")}>Sign in</span>
+          </p>
         </div>
       </div>
     </div>

@@ -19,7 +19,7 @@ function App() {
       <Button onClick={()=>queryClient.refetchQueries({})}>refetch</Button>
       <Example />
       <div className="flex h-screen items-center justify-center">
-        <ReactQueryDevtools />
+        
       </div>
     </>
   );

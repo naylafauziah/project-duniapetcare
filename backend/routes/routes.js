@@ -50,6 +50,7 @@ const {
   updateLayanan,
 } = require("../controllers/layanan-controller");
 const { getPendapatan } = require("../controllers/pendapatan-controller");
+const { sendMessage, getMessages } = require("../controllers/chat-controller");
 
 const { verifyToken } = require("../middleware/auth-middleware");
 const router = express.Router();
@@ -108,5 +109,9 @@ router.delete("/dokter/:id", verifyToken, deleteDokter);
 
 // revenue route
 router.get("/pendapatan", verifyToken, getPendapatan);
+
+// chat route
+router.post("/chat/send", verifyToken, sendMessage);
+router.get("/chat/messages", verifyToken, getMessages);
 
 module.exports = router;

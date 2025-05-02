@@ -13,33 +13,33 @@ interface FAQProps {
 
 const FAQList: FAQProps[] = [
   {
-    question: "Is this template free?",
-    answer: "Yes. It is a free ChadcnUI template.",
+    question: "Apa itu DuniaPetcare?",
+    answer: "DuniaPetcare adalah layanan perawatan hewan yang menyediakan berbagai kebutuhan untuk hewan peliharaan Anda, seperti grooming, konsultasi kesehatan, penitipan, dan produk makanan berkualitas tinggi. Kami berdiri sejak tahun 2023 dengan misi memberikan kenyamanan dan kebahagiaan bagi hewan kesayangan Anda.",
     value: "item-1",
   },
   {
-    question: "Lorem ipsum dolor sit amet consectetur adipisicing elit?",
+    question: "Apa saja layanan yang ditawarkan oleh DuniaPetcare?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sint labore quidem quam? Consectetur sapiente iste rerum reiciendis animi nihil nostrum sit quo, modi quod.",
+      "Kami menyediakan berbagai layanan, antara lain: Grooming seperti Perawatan bulu, kuku, dan kebersihan hewan, Konsultasi Kesehatan untuk bertemu dokter hewan profesional untuk pemeriksaan kesehatan, Daycare dan Boarding untuk menitipkan hewan peliharaan anda, Pet Shop kami menjual makanan, aksesoris, dan produk kesehatan berkualitas tinggi. ",
     value: "item-2",
   },
   {
     question:
-      "Lorem ipsum dolor sit amet  Consectetur natus dolores minus quibusdam?",
+      "Bagaimana cara memesan layanan di DuniaPetcare?",
     answer:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Labore qui nostrum reiciendis veritatis necessitatibus maxime quis ipsa vitae cumque quo?",
+      "Langkah-langkah untuk memesan layanan: 1. Kunjungi halaman layanan di website kami, 2. Isi formulir pemesanan atau hubungi nomor kontak yang tersedia, 3. Tim kami akan menghubungi Anda untuk konfirmasi jadwal dan detail layanan, 4. Bawa hewan kesayangan Anda ke lokasi kami sesuai dengan jadwal yang telah di konfirmasi ",
     value: "item-3",
   },
   {
-    question: "Lorem ipsum dolor sit amet, consectetur adipisicing elit?",
-    answer: "Lorem ipsum dolor sit amet consectetur, adipisicing elit.",
+    question: "Di mana lokasi DuniaPetcare?",
+    answer: "DuniaPetcare berlokasi di [Alamat Lengkap Anda] dan kami juga melayani pemesanan melalui online. Untuk informasi lebih lanjut, silakan hubungi kami melalui Instagram atau email yang tertera di halaman kontak.",
     value: "item-4",
   },
   {
     question:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur natus?",
+      "Apakah ada dokter hewan di DuniaPetcare?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sint labore quidem quam? Consectetur sapiente iste rerum reiciendis animi nihil nostrum sit quo, modi quod.",
+      "Tentu! Kami bekerja sama dengan dokter hewan berpengalaman untuk memberikan konsultasi kesehatan, vaksinasi, dan pengobatan bagi hewan peliharaan Anda.",
     value: "item-5",
   },
 ];
@@ -77,13 +77,14 @@ export const FAQ = () => {
       </Accordion>
 
       <h3 className="font-medium mt-4">
-        Still have questions?{" "}
+      Masih ada pertanyaan?{" "}
         <a
           rel="noreferrer noopener"
-          href="#"
+          href="https://www.instagram.com/duniapetcareandstore?igsh=d3lnYTgwMDBxajM3"
+          target="_blank"
           className="text-blue-500 transition-all border-primary hover:border-b-2"
         >
-          Contact us
+          Hubungi kami
         </a>
       </h3>
     </section>

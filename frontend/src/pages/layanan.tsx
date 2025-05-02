@@ -37,17 +37,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Trash2, Pencil } from "lucide-react";
-import {
-  addLayanan,
-  deleteLayanan,
-  getAllLayanan,
-  updateLayanan,
-} from "@/utils/layananService";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type Layanan = {
   id_layanan: number;
@@ -59,8 +52,9 @@ type Layanan = {
 };
 
 function Layanan() {
+  const [layananData, setLayananData] = useState<Layanan[]>([]);
   const [tipeLayanan, setTipeLayanan] = useState<string>("");
-  const [dataLayanan, setDataLayanan] = useState<Layanan | null>();
+  const [dataLayanan, setDataLayanan] = useState<Layanan | null>(null);
   const [newLayanan, setNewLayanan] = useState({
     nama_layanan: "",
     description: "",
@@ -69,40 +63,23 @@ function Layanan() {
     tipe_layanan: "",
   });
 
-  const layanan = useQuery({
-    queryKey: ["layanan"],
-    queryFn: getAllLayanan,
-  });
+  useEffect(() => {
+    async function fetchLayanan() {
+      const response = await fetch("/api/layanan");
+      const data = await response.json();
+      setLayananData(data);
+    }
+    fetchLayanan();
+  }, []);
 
-  const addLayananMutation = useMutation({
-    mutationFn: addLayanan,
-    onSuccess: () => {
-      layanan.refetch();
-    },
-  });
-
-  const updateLayananMutation = useMutation({
-    mutationFn: updateLayanan,
-    onSuccess: () => {
-      layanan.refetch();
-    },
-  });
-
-  const deleteLayananMutation = useMutation({
-    mutationFn: deleteLayanan,
-    onSuccess: () => {
-      layanan.refetch();
-    },
-  });
-
-  const handleAdd = (e: React.FormEvent) => {
+  const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
-    addLayananMutation.mutate({
-      namaLayanan: newLayanan.nama_layanan,
-      description: newLayanan.description,
-      harga: newLayanan.harga,
-      img_url: newLayanan.img_url,
-      tipeLayanan: newLayanan.tipe_layanan,
+    await fetch("/api/layanan", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newLayanan),
     });
     setNewLayanan({
       nama_layanan: "",
@@ -111,25 +88,41 @@ function Layanan() {
       img_url: "",
       tipe_layanan: "",
     });
+    const response = await fetch("/api/layanan");
+    const updatedData = await response.json();
+    setLayananData(updatedData);
   };
 
-  const handleUpdate = (e: React.FormEvent) => {
+  const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (dataLayanan) {
-      updateLayananMutation.mutate({
-        id: dataLayanan.id_layanan,
-        namaLayanan: dataLayanan.nama_layanan,
-        description: dataLayanan.description,
-        harga: dataLayanan.harga,
-        img_url: dataLayanan.img_url,
-        tipeLayanan: tipeLayanan,
+      await fetch(`/api/layanan/${dataLayanan.id_layanan}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nama_layanan: dataLayanan.nama_layanan,
+          description: dataLayanan.description,
+          harga: dataLayanan.harga,
+          img_url: dataLayanan.img_url,
+          tipe_layanan: tipeLayanan,
+        }),
       });
+      const response = await fetch("/api/layanan");
+      const updatedData = await response.json();
+      setLayananData(updatedData);
+      setDataLayanan(null);
     }
-    console.log(dataLayanan);
   };
 
-  const handleDelete = (id: number) => {
-    deleteLayananMutation.mutate(id);
+  const handleDelete = async (id: number) => {
+    await fetch(`/api/layanan/${id}`, {
+      method: "DELETE",
+    });
+    const response = await fetch("/api/layanan");
+    const updatedData = await response.json();
+    setLayananData(updatedData);
   };
 
   return (
@@ -220,6 +213,7 @@ function Layanan() {
         <TableCaption>List Layanan</TableCaption>
         <TableHeader>
           <TableRow>
+            <TableHead>No</TableHead>
             <TableHead>ID</TableHead>
             <TableHead>Nama</TableHead>
             <TableHead>Deskripsi</TableHead>
@@ -232,154 +226,130 @@ function Layanan() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {layanan.isLoading ? (
-            <></>
-          ) : (
-            layanan.data.map((singleLayanan: any, index: number) => (
-              <TableRow key={index}>
-                <TableCell>{singleLayanan.id_layanan}</TableCell>
-                <TableCell>{singleLayanan.nama_layanan}</TableCell>
-                <TableCell>{singleLayanan.description}</TableCell>
-                <TableCell>{`Rp.${singleLayanan.harga}`}</TableCell>
-                <TableCell>{singleLayanan.tipe_layanan}</TableCell>
-                <TableCell className="max-w-20 truncate">
-                  {singleLayanan.img_url}
-                </TableCell>
-                <TableCell className="flex w-full items-center justify-center gap-x-3">
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        onClick={() => {
-                          setDataLayanan(singleLayanan);
-                          setTipeLayanan(singleLayanan.tipe_layanan);
-                        }}
-                      >
-                        <Pencil />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent aria-describedby={undefined}>
-                      <DialogHeader>
-                        <DialogTitle>Edit Layanan</DialogTitle>
-                      </DialogHeader>
-                      <form
-                        onSubmit={handleUpdate}
-                        className="flex flex-col gap-y-3"
-                      >
-                        <Label>Nama Layanan</Label>
-                        <Input
-                          type="text"
-                          value={dataLayanan?.nama_layanan}
-                          onChange={(e) =>
-                            setDataLayanan((prev) =>
-                              prev
-                                ? { ...prev, nama_layanan: e.target.value }
-                                : null,
-                            )
-                          }
-                        />
-                        <Label>Deskripsi Layanan</Label>
-                        <Textarea
-                          value={dataLayanan?.description}
-                          onChange={(e) =>
-                            setDataLayanan((prev) =>
-                              prev
-                                ? { ...prev, description: e.target.value }
-                                : null,
-                            )
-                          }
-                        />
-                        <Label>Harga Layanan (dalam Rupiah)</Label>
-                        <Input
-                          type="number"
-                          value={dataLayanan?.harga}
-                          onChange={(e) =>
-                            setDataLayanan((prev) =>
-                              prev
-                                ? { ...prev, harga: parseInt(e.target.value) }
-                                : null,
-                            )
-                          }
-                        />
-                        <Label>Image url</Label>
-                        <Input
-                          type="text"
-                          value={dataLayanan?.img_url}
-                          onChange={(e) =>
-                            setDataLayanan((prev) =>
-                              prev
-                                ? { ...prev, img_url: e.target.value }
-                                : null,
-                            )
-                          }
-                        />
-                        <DropdownMenu>
-                          <Label>Tipe Layanan</Label>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant={"outline"}>{tipeLayanan}</Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent>
-                            <DropdownMenuLabel>
-                              Pilih tipe layanan
-                            </DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuRadioGroup
-                              value={tipeLayanan}
-                              onValueChange={setTipeLayanan}
-                            >
-                              <DropdownMenuRadioItem value="grooming">
-                                Grooming
-                              </DropdownMenuRadioItem>
-                              <DropdownMenuRadioItem value="konsultasi">
-                                Konsultasi
-                              </DropdownMenuRadioItem>
-                            </DropdownMenuRadioGroup>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                        <div className="flex w-full items-center justify-center gap-x-3">
-                          <DialogClose asChild>
-                            <Button variant={"outline"}>Cancel</Button>
-                          </DialogClose>
-                          <DialogClose asChild>
-                            <Button type="submit">Confirm</Button>
-                          </DialogClose>
-                        </div>
-                      </form>
-                    </DialogContent>
-                  </Dialog>
-
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant={"destructive"}>
-                        <Trash2 />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Are you absolutely sure?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone. This will permanently
-                          delete your account and remove your data from our
-                          servers.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          className="bg-destructive hover:bg-red-400"
-                          onClick={() => handleDelete(singleLayanan.id_layanan)}
-                        >
-                          Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </TableCell>
-              </TableRow>
-            ))
-          )}
+          {layananData.map((singleLayanan, index) => (
+            <TableRow key={index}>
+              <TableCell>{index + 1}</TableCell>
+              <TableCell>{singleLayanan.id_layanan}</TableCell>
+              <TableCell>{singleLayanan.nama_layanan}</TableCell>
+              <TableCell>{singleLayanan.description}</TableCell>
+              <TableCell>{`Rp.${singleLayanan.harga}`}</TableCell>
+              <TableCell>{singleLayanan.tipe_layanan}</TableCell>
+              <TableCell className="max-w-20 truncate">
+                {singleLayanan.img_url}
+              </TableCell>
+              <TableCell className="flex w-full items-center justify-center gap-x-3">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      onClick={() => {
+                        setDataLayanan(singleLayanan);
+                        setTipeLayanan(singleLayanan.tipe_layanan);
+                      }}
+                    >
+                      <Pencil />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent aria-describedby={undefined}>
+                    <DialogHeader>
+                      <DialogTitle>Edit Layanan</DialogTitle>
+                    </DialogHeader>
+                    <form
+                      onSubmit={handleUpdate}
+                      className="flex flex-col gap-y-3"
+                    >
+                      <Label>Nama Layanan</Label>
+                      <Input
+                        type="text"
+                        value={dataLayanan?.nama_layanan || ""}
+                        onChange={(e) =>
+                          setDataLayanan((prev) =>
+                            prev
+                              ? { ...prev, nama_layanan: e.target.value }
+                              : null,
+                          )
+                        }
+                      />
+                      <Label>Deskripsi Layanan</Label>
+                      <Textarea
+                        value={dataLayanan?.description || ""}
+                        onChange={(e) =>
+                          setDataLayanan((prev) =>
+                            prev
+                              ? { ...prev, description: e.target.value }
+                              : null,
+                          )
+                        }
+                      />
+                      <Label>Harga Layanan (dalam Rupiah)</Label>
+                      <Input
+                        type="number"
+                        value={dataLayanan?.harga || 0}
+                        onChange={(e) =>
+                          setDataLayanan((prev) =>
+                            prev
+                              ? { ...prev, harga: parseInt(e.target.value) }
+                              : null,
+                          )
+                        }
+                      />
+                      <Label>Image url</Label>
+                      <Input
+                        type="text"
+                        value={dataLayanan?.img_url || ""}
+                        onChange={(e) =>
+                          setDataLayanan((prev) =>
+                            prev
+                              ? { ...prev, img_url: e.target.value }
+                              : null,
+                          )
+                        }
+                      />
+                      <DropdownMenu>
+                        <Label>Tipe Layanan</Label>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant={"outline"}>{tipeLayanan}</Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuLabel>Pilih tipe layanan</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuRadioGroup
+                            value={tipeLayanan}
+                            onValueChange={(value) => setTipeLayanan(value)}
+                          >
+                            <DropdownMenuRadioItem value="grooming">
+                              Grooming
+                            </DropdownMenuRadioItem>
+                            <DropdownMenuRadioItem value="konsultasi">
+                              Konsultasi
+                            </DropdownMenuRadioItem>
+                          </DropdownMenuRadioGroup>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                      <div className="flex w-full items-center justify-center gap-x-3">
+                        <DialogClose asChild>
+                          <Button variant={"outline"}>Cancel</Button>
+                        </DialogClose>
+                        <DialogClose asChild>
+                          <Button type="submit">Confirm</Button>
+                        </DialogClose>
+                      </div>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant={"destructive"}
+                      onClick={() => handleDelete(singleLayanan.id_layanan)}
+                    >
+                      <Trash2 />
+                    </Button>
+                  </AlertDialogTrigger>
+                </AlertDialog>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </div>

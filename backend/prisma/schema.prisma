@@ -106,6 +106,24 @@ model users {
   comment      comment[]
   dokter       dokter[]
   hewan        hewan[]
+
+  sentChats    chat[]      @relation("SentChats")
+  receivedChats chat[]     @relation("ReceivedChats")
+}
+
+model chat {
+  id_chat     Int       @id @default(autoincrement())
+  senderId    Int
+  receiverId  Int
+  message     String    @db.Text
+  created_at  DateTime  @default(now()) @db.Timestamp(0)
+  updated_at  DateTime  @default(now()) @db.Timestamp(0)
+
+  sender      users     @relation("SentChats", fields: [senderId], references: [id_user], onUpdate: Restrict, onDelete: Cascade)
+  receiver    users     @relation("ReceivedChats", fields: [receiverId], references: [id_user], onUpdate: Restrict, onDelete: Cascade)
+
+  @@index([senderId], map: "senderId")
+  @@index([receiverId], map: "receiverId")
 }
 
 enum hewan_species {

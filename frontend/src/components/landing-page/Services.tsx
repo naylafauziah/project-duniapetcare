@@ -1,6 +1,11 @@
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { MagnifierIcon, WalletIcon, ChartIcon } from "./Icons";
-import cubeLeg from "@/assets/cube-leg.png";
+import {
+  Bone,
+  HandHeart,
+  Stethoscope,
+} from "lucide-react";
+import petcare from "@/assets/petcare1.jpg";
 
 interface ServiceProps {
   title: string;
@@ -10,40 +15,39 @@ interface ServiceProps {
 
 const serviceList: ServiceProps[] = [
   {
-    title: "Code Collaboration",
+    title: "Layanan Grooming",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi nesciunt est nostrum omnis ab sapiente.",
-    icon: <ChartIcon />,
+      "Perawatan lengkap untuk kebersihan dan kesehatan bulu, kuku, dan tubuh hewan kesayangan Anda.",
+    icon: <HandHeart />,
   },
   {
-    title: "Project Management",
+    title: "Konsultasi Dokter Hewan",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi nesciunt est nostrum omnis ab sapiente.",
-    icon: <WalletIcon />,
+    "Berkonsultasi dengan dokter hewan profesional untuk kesehatan dan perawatan hewan Anda.",
+    icon: <Stethoscope />,
   },
   {
-    title: "Task Automation",
+    title: "Produk Makanan & Aksesoris",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi nesciunt est nostrum omnis ab sapiente.",
-    icon: <MagnifierIcon />,
+    "Menjual makanan berkualitas, vitamin, mainan, dan aksesoris untuk kebutuhan hewan Anda.",
+    icon: <Bone />,
   },
 ];
 
 export const Services = () => {
   return (
-    <section className="container py-24 sm:py-32">
+    <section id="layanankami" className="container py-24 sm:py-32">
       <div className="grid lg:grid-cols-[1fr,1fr] gap-8 place-items-center">
         <div>
           <h2 className="text-3xl md:text-4xl font-bold">
             <span className="bg-gradient-to-b from-blue-400 to-blue-600 text-transparent bg-clip-text">
-              Client-Centric{" "}
+              Layanan{" "}
             </span>
-            Services
+            Kami
           </h2>
 
           <p className="text-muted-foreground text-xl mt-4 mb-8 ">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Veritatis
-            dolor.
+          Kami menyediakan berbagai layanan terbaik untuk merawat dan menjaga kebahagiaan hewan kesayangan Anda.
           </p>
 
           <div className="flex flex-col gap-8">
@@ -66,8 +70,8 @@ export const Services = () => {
         </div>
 
         <img
-          src={cubeLeg}
-          className="w-[300px] md:w-[500px] lg:w-[600px] object-contain"
+          src={petcare  }
+          className="w-[300px] md:w-[500px] lg:w-[600px] h-[700px] rounded-3xl"
           alt="About services"
         />
       </div>

@@ -1,36 +1,35 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MedalIcon, MapIcon, PlaneIcon, GiftIcon } from "@/components/landing-page/Icons";
 
 interface FeatureProps {
-  icon: JSX.Element;
+  step: number;
   title: string;
   description: string;
 }
 
 const features: FeatureProps[] = [
   {
-    icon: <MedalIcon />,
-    title: "Accessibility",
+    step: 1,
+    title: "Login ke Akun Anda",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum quas provident cum",
+      "Jika anda belum mempunyai akun, silakan melakukan Registrasi",
   },
   {
-    icon: <MapIcon />,
-    title: "Community",
+    step: 2,
+    title: "Pilih Layanan",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum quas provident cum",
+      "Pilihlah layanan sesuai kebutuhan hewan peliharaan Anda",
   },
   {
-    icon: <PlaneIcon />,
-    title: "Scalability",
+    step: 3,
+    title: "Isi Data dan Pesan",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum quas provident cum",
+      "Isi data hewan peliharaan anda, jadwal pertemuan, dan Lanjut pemesanan",
   },
   {
-    icon: <GiftIcon />,
-    title: "Gamification",
+    step: 4,
+    title: "Tunggu Konfirmasi",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum quas provident cum",
+      "Setelah memesan, nanti akan kami konfirmasi untuk pemesanan anda",
   },
 ];
 
@@ -38,23 +37,21 @@ export const HowItWorks = () => {
   return (
     <section id="howItWorks" className="container py-24 text-center sm:py-32">
       <h2 className="text-3xl font-bold md:text-4xl">
-        How It{" "}
+        Bagaimana Cara{" "}
         <span className="bg-gradient-to-b from-blue-400 to-blue-600 bg-clip-text text-transparent">
-          Works{" "}
+          Memesan Layanan?{" "}
         </span>
-        Step-by-Step Guide
       </h2>
       <p className="mx-auto mb-8 mt-4 text-xl text-muted-foreground md:w-3/4">
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Veritatis
-        dolor pariatur sit!
+      Ikuti langkah-langkah berikut untuk memesan layanan kami dengan mudah dan cepat. Kami siap membantu kebutuhan Anda!
       </p>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-        {features.map(({ icon, title, description }: FeatureProps) => (
+        {features.map(({ step, title, description }: FeatureProps) => (
           <Card key={title} className="bg-muted/50">
             <CardHeader>
               <CardTitle className="grid place-items-center gap-4">
-                {icon}
+                <span className="text-5xl font-bold text-blue-500">{step}</span>
                 {title}
               </CardTitle>
             </CardHeader>

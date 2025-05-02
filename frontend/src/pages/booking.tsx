@@ -36,58 +36,57 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  getAllBooking,
-  updateBookingStatus,
-  deleteBooking,
-} from "@/utils/bookingService";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { getAllBooking, updateBookingStatus, deleteBooking } from "@/utils/bookingService";
 import { Trash2, Pencil } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 
 function Booking() {
+  const [bookings, setBookings] = useState<any[]>([]);
   const [status, setStatus] = useState<string>();
 
-  const bookings = useQuery({
-    queryKey: ["booking"],
-    queryFn: getAllBooking,
-  });
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const data = await getAllBooking();
+        setBookings(data);
+      } catch (error) {
+        console.error("Error loading data:", error);
+      }
+    };
 
-  const updateBookingStatusMutation = useMutation({
-    mutationFn: ({ id, status }: { id: number; status: string }) =>
-      updateBookingStatus({ id, status }),
-    onSuccess: () => {
-      bookings.refetch();
+    fetchBookings();
+  }, []);
+
+  const handleUpdateStatus = async (id: number, status: string) => {
+    try {
+      await updateBookingStatus({ id, status });
+      setBookings((prev) =>
+        prev.map((booking) =>
+          booking.id_booking === id ? { ...booking, status } : booking
+        )
+      );
       setStatus(undefined);
-    },
-  });
-
-  const deleteBookingMutation = useMutation({
-    mutationFn: (id: number) => deleteBooking(id),
-    onSuccess: () => {
-      bookings.refetch();
-    },
-  });
-
-  const handleUpdateStatus = (id: number, status: string) => {
-    updateBookingStatusMutation.mutate({ id, status });
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
   };
 
-  const handleDelete = (id: number) => {
-    deleteBookingMutation.mutate(id);
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteBooking(id);
+      setBookings((prev) => prev.filter((booking) => booking.id_booking !== id));
+    } catch (error) {
+      console.error("Error deleting booking:", error);
+    }
   };
 
-  if (bookings.isLoading) {
+  if (!bookings.length) {
     return <div>Loading...</div>;
   }
 
-  if (bookings.isError) {
-    return <div>Error loading data</div>;
-  }
-
   return (
-    <div className="container flex h-full w-full items-center flex-col justify-center">
+    <div className="container flex h-full w-full flex-col items-center justify-center">
       <div className="my-2 flex w-full justify-between">
         <p className="text-2xl font-bold">Booking</p>
       </div>
@@ -95,6 +94,7 @@ function Booking() {
         <TableCaption>List Booking</TableCaption>
         <TableHeader>
           <TableRow>
+            <TableHead>No</TableHead>
             <TableHead className="w-[100px]">ID</TableHead>
             <TableHead>Hewan</TableHead>
             <TableHead>Layanan</TableHead>
@@ -107,8 +107,9 @@ function Booking() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {bookings.data.map((booking: any, index: number) => (
+          {bookings.map((booking: any, index: number) => (
             <TableRow key={index}>
+              <TableCell>{index + 1}</TableCell>
               <TableCell>{booking.id_booking}</TableCell>
               <TableCell>{booking.hewan.nama_hewan}</TableCell>
               <TableCell>{booking.layanan?.nama_layanan || "N/A"}</TableCell>
@@ -180,7 +181,7 @@ function Booking() {
                           onClick={() =>
                             handleUpdateStatus(
                               booking.id_booking,
-                              status ?? "pending",
+                              status ?? "pending"
                             )
                           }
                         >

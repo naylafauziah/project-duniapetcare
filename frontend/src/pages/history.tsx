@@ -1,9 +1,25 @@
 import { Navbar } from "@/components/landing-page/Navbar";
 import { getAllBooking } from "@/utils/bookingService";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 function History() {
-  const bookings = useQuery({ queryKey: ["bookings"], queryFn: getAllBooking });
+  const [bookings, setBookings] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchBookings() {
+      try {
+        const data = await getAllBooking();
+        setBookings(data);
+      } catch (error) {
+        console.error("Error fetching bookings:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchBookings();
+  }, []);
 
   return (
     <div>
@@ -11,17 +27,17 @@ function History() {
       <div className="container flex flex-col gap-y-5">
         <p className="mt-5 text-2xl font-bold">Booking History</p>
 
-        {bookings.isLoading ? (
+        {isLoading ? (
           <></>
         ) : (
-          bookings.data.map((booking: any, index: number) => (
+          bookings.map((booking: any, index: number) => (
             <div key={index}>
               <div className="grid h-20 w-full grid-flow-col grid-cols-10 border bg-primary-foreground font-mono text-sm font-semibold">
                 <div className="col-span-2">
                   <div className="flex h-full w-full flex-col items-start justify-center pl-5">
                     <p>Appointment Date</p>
                     <p>
-                      {new Date(booking.appointment_date).toLocaleString(
+                      {new Date(booking?.appointment_date).toLocaleString(
                         "id-ID",
                         {
                           year: "numeric",
@@ -37,13 +53,13 @@ function History() {
                 <div className="col-span-4">
                   <div className="flex h-full w-full flex-col items-start justify-center pl-5">
                     <p>Booking Number</p>
-                    <p>{booking.id_booking}</p>
+                    <p>{booking?.id_booking}</p>
                   </div>
                 </div>
                 <div className="col-span-4">
                   <div className="flex h-full w-full flex-col items-start justify-center pl-5">
                     <p>Total</p>
-                    <p>{`Rp.${booking.total_price}`}</p>
+                    <p>{`Rp.${booking?.total_price}`}</p>
                   </div>
                 </div>
               </div>
@@ -51,21 +67,21 @@ function History() {
                 <div className="col-span-2 overflow-hidden">
                   <img
                     className="flex h-full w-full items-center justify-center object-cover p-3"
-                    src={booking.layanan.img_url}
+                    src={booking?.layanan?.img_url}
                   />
                 </div>
                 <div className="col-span-4 p-5 text-sm">
-                  <p>{`Nama: ${booking.hewan.nama_hewan}`}</p>
-                  <p>{`Species: ${booking.hewan.species}`}</p>
-                  <p>{`Breed: ${booking.hewan.breed}`}</p>
-                  <p>{`Age: ${booking.hewan.age}`}</p>
-                  <p>{`Weight: ${booking.hewan.weight}`}</p>
+                  <p>{`Nama: ${booking?.hewan?.nama_hewan}`}</p>
+                  <p>{`Species: ${booking?.hewan?.species}`}</p>
+                  <p>{`Breed: ${booking?.hewan?.breed}`}</p>
+                  <p>{`Age: ${booking?.hewan?.age}`}</p>
+                  <p>{`Weight: ${booking?.hewan?.weight}`}</p>
                   <br />
-                  <p>{`Layanan: ${booking.layanan.nama_layanan}`}</p>
-                  <p>{`Dokter: ${booking.dokter.users.full_name}`}</p>
+                  <p>{`Layanan: ${booking?.layanan?.nama_layanan}`}</p>
+                  <p>{`Dokter: ${booking?.dokter?.users?.full_name}`}</p>
                 </div>
                 <div className="col-span-4 p-5">
-                  <p>{booking.status}</p>
+                  <p>{booking?.status}</p>
                 </div>
               </div>
             </div>

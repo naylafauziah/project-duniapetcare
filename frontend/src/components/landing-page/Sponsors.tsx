@@ -1,34 +1,39 @@
-import { Radar } from "lucide-react";
+import WhiskasLogo from "@/assets/whiskas.svg";
+import RoyalCaninLogo from "@/assets/royalcanin.svg";
+import PurinaLogo from "@/assets/purina.svg";
+import PedigreeLogo from "@/assets/pedigree.svg";
+import FriskiesLogo from "@/assets/friskies.svg";
+import HillsLogo from "@/assets/hills.svg";
 
 interface SponsorProps {
-  icon: JSX.Element;
+  imageSrc: string;
   name: string;
 }
 
 const sponsors: SponsorProps[] = [
   {
-    icon: <Radar size={34} />,
-    name: "Sponsor 1",
+    imageSrc: RoyalCaninLogo, // Ganti dengan path gambar brand
+    name: "Royal Canin",
   },
   {
-    icon: <Radar size={34} />,
-    name: "Sponsor 2",
+    imageSrc: WhiskasLogo,
+    name: "Whiskas",
   },
   {
-    icon: <Radar size={34} />,
-    name: "Sponsor 3",
+    imageSrc: PurinaLogo,
+    name: "Purina",
   },
   {
-    icon: <Radar size={34} />,
-    name: "Sponsor 4",
+    imageSrc: PedigreeLogo,
+    name: "Pedigree",
   },
   {
-    icon: <Radar size={34} />,
-    name: "Sponsor 5",
+    imageSrc: FriskiesLogo,
+    name: "Friskies",
   },
   {
-    icon: <Radar size={34} />,
-    name: "Sponsor 6",
+    imageSrc: HillsLogo,
+    name: "Hill's",
   },
 ];
 
@@ -39,17 +44,20 @@ export const Sponsors = () => {
       className="container pt-24 sm:py-32"
     >
       <h2 className="text-center text-md lg:text-xl font-bold mb-8 text-blue-500">
-        Investors and founders
+        Brand Partners
       </h2>
 
-      <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8">
-        {sponsors.map(({ icon, name }: SponsorProps) => (
+      <div className="flex flex-wrap justify-center items-center gap-20 md:gap-8">
+        {sponsors.map(({ imageSrc, name }: SponsorProps) => (
           <div
             key={name}
-            className="flex items-center gap-1 text-muted-foreground/60"
+            className="flex items-center justify-center mx-4"
           >
-            <span>{icon}</span>
-            <h3 className="text-xl  font-bold">{name}</h3>
+            <img
+              src={imageSrc}
+              alt={name}
+              className="h-24 w-auto object-contain mx-4" // Atur ukuran gambar
+            />
           </div>
         ))}
       </div>

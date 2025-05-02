@@ -12,7 +12,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { InstagramLogoIcon, ChatBubbleIcon } from "@radix-ui/react-icons";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 import { logout } from "@/utils/authService";
 import { useToast } from "@/hooks/use-toast";
+import PetcareProfile from "../petcare/petcare-profile";
 
 interface RouteProps {
   href: string;
@@ -29,17 +30,25 @@ interface RouteProps {
 
 const routeList: RouteProps[] = [
   {
-    href: "/#features",
+    href: "/#about",
+    label: "About Us",
+  },
+  {
+    href: "/services",
+    label: "Services",
+  },
+  {
+    href: "/#layanankami",
     label: "Features",
   },
-  {
-    href: "/#testimonials",
-    label: "Testimonials",
-  },
-  {
-    href: "/#pricing",
-    label: "Pricing",
-  },
+  // {
+  //   href: "/#testimonials",
+  //   label: "Testimonials",
+  // },
+  // {
+  //   href: "/#pricing",
+  //   label: "Pricing",
+  // },
   {
     href: "/#faq",
     label: "FAQ",
@@ -49,12 +58,8 @@ const routeList: RouteProps[] = [
   //   label: "Articles",
   // },
   {
-    href: "/services",
-    label: "Services",
-  },
-  {
     href: "/history",
-    label: "History",
+    label: "My Order",
   },
 ];
 
@@ -75,7 +80,11 @@ export const Navbar = () => {
       <NavigationMenu className="mx-auto">
         <NavigationMenuList className="container flex h-14 w-screen justify-between px-4">
           <NavigationMenuItem className="flex font-bold">
-            <img src={LogoImage} alt="Logo" className="mr-2 h-14 w-auto" />
+            <img
+              src={LogoImage}
+              alt="Logo"
+              className="mr-2 h-14 w-auto rounded-full bg-white"
+            />
             <a
               rel="noreferrer noopener"
               href="/"
@@ -101,11 +110,11 @@ export const Navbar = () => {
 
               <SheetContent side={"left"}>
                 <SheetHeader>
-                  <SheetTitle className="text-xl font-bold">
-                    Shadcn/React
+                  <SheetTitle className="ml-4 text-xl font-bold">
+                    Dunia PetCare
                   </SheetTitle>
                 </SheetHeader>
-                <nav className="mt-4 flex flex-col items-center justify-center gap-2">
+                <nav className="mt-4 flex flex-col items-center justify-center gap-4">
                   {routeList.map(({ href, label }: RouteProps) => (
                     <a
                       rel="noreferrer noopener"
@@ -119,15 +128,45 @@ export const Navbar = () => {
                   ))}
                   <a
                     rel="noreferrer noopener"
-                    href="https://github.com/leoMirandaa/shadcn-landing-page.git"
+                    href="https://www.instagram.com/duniapetcareandstore?igsh=d3lnYTgwMDBxajM3"
                     target="_blank"
                     className={`w-[110px] border ${buttonVariants({
                       variant: "secondary",
                     })}`}
                   >
-                    <GitHubLogoIcon className="mr-2 h-5 w-5" />
-                    Github
+                    <InstagramLogoIcon className="mr-2 h-5 w-5" />
+                    Instagram
                   </a>
+                  <div>
+                    <div className="py-3 px-10">
+
+                    {isAuthenticated ? (
+                      <Button
+                      onClick={handleLogout}
+                      variant={"secondary"}
+                      className="border"
+                      >
+                        Logout
+                      </Button>
+                    ) : (
+                      <Button
+                      rel="noreferrer noopener"
+                      onClick={() => navigate("/login")}
+                      className={`border ${buttonVariants({ variant: "secondary" })}`}
+                      >
+                        Login
+                      </Button>
+                    )}
+                    </div>
+                    <div className="py-3 px-8">
+                      <Button
+                        className={user?.role === "admin" ? "block" : "hidden"}
+                        onClick={() => navigate("/dashboard")}
+                      >
+                        Dashboard
+                      </Button>
+                    </div>
+                  </div>
                 </nav>
               </SheetContent>
             </Sheet>
@@ -173,7 +212,25 @@ export const Navbar = () => {
             >
               Dashboard
             </Button>
+
+            {/* Add Chat Button */}
+            <Button
+              variant={"default"}
+              onClick={() => navigate("/chat")}
+              className="flex items-center gap-2"
+            >
+              <ChatBubbleIcon className="h-5 w-5" />
+              Chat
+            </Button>
+
             <ModeToggle />
+            <div
+              className={
+                isAuthenticated ? "flex items-center justify-center" : "hidden"
+              }
+            >
+              <PetcareProfile />
+            </div>
           </div>
         </NavigationMenuList>
       </NavigationMenu>

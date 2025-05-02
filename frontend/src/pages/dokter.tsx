@@ -34,10 +34,9 @@ import {
   deleteDokter,
   addDokter,
 } from "@/utils/dokterService";
-import { useQuery, useMutation } from "@tanstack/react-query";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getAllUser } from "@/utils/usersService";
 import {
   DropdownMenu,
@@ -73,77 +72,80 @@ function Dokter() {
     experience_years: 0,
     rating: 0,
   });
+  const [dokterData, setDokterData] = useState<Dokter[]>([]);
+  const [usersData, setUsersData] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const dokter = useQuery({
-    queryKey: ["dokter"],
-    queryFn: getAllDokter,
-  });
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const dokterResponse = await getAllDokter();
+        const usersResponse = await getAllUser();
+        setDokterData(dokterResponse);
+        setUsersData(usersResponse);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
 
-  const users = useQuery({
-    queryKey: ["users"],
-    queryFn: getAllUser,
-  });
+    fetchData();
+  }, []);
 
-  const addDokterMutation = useMutation({
-    mutationFn: addDokter,
-    onSuccess: () => {
-      dokter.refetch();
-    },
-  });
-
-  const updateDokterMutation = useMutation({
-    mutationFn: updateDokter,
-    onSuccess: () => {
-      dokter.refetch();
-    },
-  });
-
-  const deleteDokterMutation = useMutation({
-    mutationFn: deleteDokter,
-    onSuccess: () => {
-      dokter.refetch();
-    },
-  });
-
-  const handleAdd = (e: React.FormEvent) => {
+  const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
-    addDokterMutation.mutate({
-      id_user: parseInt(userId),
-      spesialisasi: newDokter.spesialisasi,
-      experience_years: newDokter.experience_years,
-      rating: newDokter.rating,
-    });
-    setNewDokter({
-      id_user: 0,
-      spesialisasi: "",
-      experience_years: 0,
-      rating: 0,
-    });
-  };
-
-  const handleUpdate = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (dataDokter) {
-      updateDokterMutation.mutate({
-        id: dataDokter.id_dokter,
-        spesialisasi: dataDokter.spesialisasi,
-        experience_years: dataDokter.experience_years,
-        rating: dataDokter.rating,
+    try {
+      await addDokter({
+        id_user: parseInt(userId),
+        spesialisasi: newDokter.spesialisasi,
+        experience_years: newDokter.experience_years,
+        rating: newDokter.rating,
       });
-      console.log(dataDokter);
+      const updatedDokter = await getAllDokter();
+      setDokterData(updatedDokter);
+    } catch (error) {
+      console.error("Error adding dokter:", error);
+    } finally {
+      setNewDokter({
+        id_user: 0,
+        spesialisasi: "",
+        experience_years: 0,
+        rating: 0,
+      });
     }
   };
 
-  const handleDelete = (id: number) => {
-    deleteDokterMutation.mutate(id);
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (dataDokter) {
+      try {
+        await updateDokter({
+          id: dataDokter.id_dokter,
+          spesialisasi: dataDokter.spesialisasi,
+          experience_years: dataDokter.experience_years,
+          rating: dataDokter.rating,
+        });
+        const updatedDokter = await getAllDokter();
+        setDokterData(updatedDokter);
+      } catch (error) {
+        console.error("Error updating dokter:", error);
+      }
+    }
   };
 
-  //   if (dokter.isLoading) {
-  //     return <div>Loading...</div>;
-  //   }
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteDokter(id);
+      const updatedDokter = await getAllDokter();
+      setDokterData(updatedDokter);
+    } catch (error) {
+      console.error("Error deleting dokter:", error);
+    }
+  };
 
-  if (dokter.isError || users.isError) {
-    return <div>Error loading data</div>;
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -165,8 +167,7 @@ function Dokter() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant={"outline"}>
-                    {users.data.find((user: any) => user.id_user === userId)
-                      ?.full_name || ""}
+                    {usersData.find((user) => user.id_user === parseInt(userId))?.full_name || ""}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
@@ -176,8 +177,8 @@ function Dokter() {
                     value={userId}
                     onValueChange={setUserId}
                   >
-                    {users.data.map((user: any, index: number) => (
-                      <DropdownMenuRadioItem key={index} value={user.id_user}>
+                    {usersData.map((user, index) => (
+                      <DropdownMenuRadioItem key={index} value={user.id_user.toString()}>
                         {user.full_name}
                       </DropdownMenuRadioItem>
                     ))}
@@ -230,6 +231,7 @@ function Dokter() {
         <TableCaption>List Dokter</TableCaption>
         <TableHeader>
           <TableRow>
+            <TableHead>No</TableHead>
             <TableHead>ID</TableHead>
             <TableHead>Nama</TableHead>
             <TableHead>Spesialisasi</TableHead>
@@ -241,122 +243,117 @@ function Dokter() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {dokter.isLoading || users.isLoading ? (
-            <></>
-          ) : (
-            dokter.data.map((singleDokter: Dokter, index: number) => (
-              <TableRow key={index}>
-                <TableCell>{singleDokter.id_dokter}</TableCell>
-                <TableCell>{singleDokter.users.full_name}</TableCell>
-                <TableCell>{singleDokter.spesialisasi}</TableCell>
-                <TableCell>{singleDokter.experience_years}</TableCell>
-                <TableCell>{singleDokter.rating}</TableCell>
-                <TableCell className="flex w-full items-center justify-center gap-x-3">
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        onClick={() => {
-                          setDataDokter(singleDokter);
-                        }}
+          {dokterData.map((singleDokter, index) => (
+            <TableRow key={index}>
+              <TableCell>{index + 1}</TableCell>
+              <TableCell>{singleDokter.id_dokter}</TableCell>
+              <TableCell>{singleDokter.users.full_name}</TableCell>
+              <TableCell>{singleDokter.spesialisasi}</TableCell>
+              <TableCell>{singleDokter.experience_years}</TableCell>
+              <TableCell>{singleDokter.rating}</TableCell>
+              <TableCell className="flex w-full items-center justify-center gap-x-3">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      onClick={() => {
+                        setDataDokter(singleDokter);
+                      }}
+                    >
+                      <Pencil />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent aria-describedby={undefined}>
+                    <DialogHeader>
+                      <DialogTitle>Edit Dokter</DialogTitle>
+                    </DialogHeader>
+                    <form
+                      onSubmit={handleUpdate}
+                      className="flex flex-col gap-y-3"
+                    >
+                      <Label>Spesialisasi</Label>
+                      <Input
+                        type="text"
+                        value={dataDokter?.spesialisasi || ""}
+                        onChange={(e) =>
+                          setDataDokter((prev) =>
+                            prev
+                              ? { ...prev, spesialisasi: e.target.value }
+                              : null,
+                          )
+                        }
+                      />
+                      <Label>Pengalaman (tahun)</Label>
+                      <Input
+                        type="number"
+                        value={dataDokter?.experience_years || 0}
+                        onChange={(e) =>
+                          setDataDokter((prev) =>
+                            prev
+                              ? {
+                                  ...prev,
+                                  experience_years: parseInt(e.target.value),
+                                }
+                              : null,
+                          )
+                        }
+                      />
+                      <Label>Rating</Label>
+                      <Input
+                        type="number"
+                        value={dataDokter?.rating || 0}
+                        onChange={(e) =>
+                          setDataDokter((prev) =>
+                            prev
+                              ? {
+                                  ...prev,
+                                  rating: parseFloat(e.target.value),
+                                }
+                              : null,
+                          )
+                        }
+                      />
+                      <div className="flex w-full items-center justify-center gap-x-3">
+                        <DialogClose asChild>
+                          <Button variant={"outline"}>Cancel</Button>
+                        </DialogClose>
+                        <DialogClose asChild>
+                          <Button type="submit">Confirm</Button>
+                        </DialogClose>
+                      </div>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      onClick={() => {
+                        setDataDokter(singleDokter);
+                      }}
+                    >
+                      <Trash2 />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Apakah kamu yakin ingin menghapus data ini?
+                      </AlertDialogTitle>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => handleDelete(singleDokter.id_dokter)}
                       >
-                        <Pencil />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent aria-describedby={undefined}>
-                      <DialogHeader>
-                        <DialogTitle>Edit Dokter</DialogTitle>
-                      </DialogHeader>
-                      <form
-                        onSubmit={handleUpdate}
-                        className="flex flex-col gap-y-3"
-                      >
-                        <Label>Spesialisasi</Label>
-                        <Input
-                          type="text"
-                          value={dataDokter?.spesialisasi}
-                          onChange={(e) =>
-                            setDataDokter((prev) =>
-                              prev
-                                ? { ...prev, spesialisasi: e.target.value }
-                                : null,
-                            )
-                          }
-                        />
-                        <Label>Pengalaman (tahun)</Label>
-                        <Input
-                          type="number"
-                          value={dataDokter?.experience_years}
-                          onChange={(e) =>
-                            setDataDokter((prev) =>
-                              prev
-                                ? {
-                                    ...prev,
-                                    experience_years: parseInt(e.target.value),
-                                  }
-                                : null,
-                            )
-                          }
-                        />
-                        <Label>Rating</Label>
-                        <Input
-                          type="number"
-                          value={dataDokter?.rating}
-                          onChange={(e) =>
-                            setDataDokter((prev) =>
-                              prev
-                                ? {
-                                    ...prev,
-                                    rating: parseFloat(e.target.value),
-                                  }
-                                : null,
-                            )
-                          }
-                        />
-                        <div className="flex w-full items-center justify-center gap-x-3">
-                          <DialogClose asChild>
-                            <Button variant={"outline"}>Cancel</Button>
-                          </DialogClose>
-                          <DialogClose asChild>
-                            <Button type="submit">Confirm</Button>
-                          </DialogClose>
-                        </div>
-                      </form>
-                    </DialogContent>
-                  </Dialog>
-
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant={"destructive"}>
-                        <Trash2 />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Are you absolutely sure?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone. This will permanently
-                          delete your doctor and remove your data from our
-                          servers.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          className="bg-destructive hover:bg-red-400"
-                          onClick={() => handleDelete(singleDokter.id_dokter)}
-                        >
-                          Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </TableCell>
-              </TableRow>
-            ))
-          )}
+                        Confirm
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </div>
